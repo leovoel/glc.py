@@ -260,12 +260,15 @@ class Gif(Animation):
         not very clean.
 
         Defaults to ``'imageio'``.
+    convert_opts : dict
+        Dictionary with options for the converters.
     """
 
     def __init__(self, filename, *args, **kwargs):
         super().__init__(filename, *args, **kwargs)
         self.color_count = kwargs.get("color_count", 256)
         self.converter = kwargs.get("converter", "imageio")
+        self.convert_opts = kwargs.get("convert_opts", dict())
 
     def save_with_imagemagick(self, frames, filename):
         # this is stupid
@@ -285,7 +288,8 @@ class Gif(Animation):
             index += 1
 
         delay = int(100 / self.fps)
-        fuzz = 1
+        fuzz = self.convert_opts.get("fuzz", 1)
+        layer_opt = self.convert_opts.get("layer_opt", "OptimizeTransparency")
 
         cmd = [
             IMAGEMAGICK_BINARY,
@@ -294,7 +298,8 @@ class Gif(Animation):
             "-loop", "0",
             "{}_TEMP_*.png".format(_filename),
             "-coalesce",
-            "-layers", "OptimizeTransparency",
+            "-layers", layer_opt,
+            "-colors", str(self.color_count),
             "-fuzz", "{:02d}%".format(fuzz),
             filename
         ]
@@ -309,10 +314,12 @@ class Gif(Animation):
         # TODO: make this more customizable
         # TODO: add support for more formats (like videos)?
 
+        quant = self.convert_opts.get("quantizer", "wu")
+
         writer = imageio.get_writer(
             filename,
             duration=1 / self.fps,
-            quantizer="wu",
+            quantizer=quant,
             palettesize=self.color_count
         )
 
