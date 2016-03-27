@@ -1,0 +1,297 @@
+"""
+
+    glc.render_list
+    ===============
+
+    Drawing by adding shapes to a list.
+
+    (c) 2016 LeoV
+    https://github.com/leovoel/
+
+"""
+
+from copy import deepcopy
+from .shapes import *
+from .color import Color
+from .utils import bgra_to_rgba
+from .default_styles import DEFAULT_STYLES
+
+import os
+import cairo
+import numpy
+import imageio
+
+
+class RenderList:
+
+    """List of renderables/shapes.
+
+    Parameters
+    ----------
+    width : int
+        Width of the drawing surface, in pixels. Defaults to 500.
+    height : int
+        Height of the drawing surface, in pixels. Defaults to 500.
+    default_styles : dict
+        Default styling for shapes.
+    ease : string
+        The overall easing function of the animation. Defaults to ``'sine'``.
+    loop : bool
+        Whether the animation should loop. Defaults to ``True``.
+
+    Attributes
+    ----------
+    surface : :class:`cairo.ImageSurface`
+        Memory buffer for storing drawings onto.
+    context : :class:`cairo.Context`
+        Drawing context.
+    shapes : list of :class:`Shape`
+        The list of shapes to render.
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.width = kwargs.pop("width", 500)
+        self.height = kwargs.pop("height", 500)
+        self.mem_format = cairo.FORMAT_ARGB32  # expose this?
+
+        self.ease = kwargs.pop("ease", "sine")
+        self.loop = kwargs.pop("loop", True)
+
+        self.default_styles = deepcopy(DEFAULT_STYLES)
+        self.default_styles.update(kwargs.pop("default_styles", {}))
+
+        self.surface = cairo.ImageSurface(self.mem_format, self.width, self.height)
+        self.context = cairo.Context(self.surface)
+
+        self.shapes = []
+
+    def size(self, width=500, height=500):
+        """Changes the size of the surface.
+
+        Please note that this creates an entirely new surface/context.
+
+        Parameters
+        ----------
+        width : int
+            New width of the surface.
+        height : int
+            New height of the surface.
+
+        Returns
+        -------
+        (width, height) : tuple of int
+        """
+
+        self.width = width
+        self.height = height
+
+        self.surface.finish()
+        self.surface = cairo.ImageSurface(self.mem_format, self.width, self.height)
+        self.context = cairo.Context(self.surface)
+
+        return width, height
+
+    def add(self, shape):
+        """Adds a shape to the list.
+
+        Parameters
+        ----------
+        shape : :class:`Shape`
+
+        Returns
+        -------
+        shape : :class:`Shape`
+            The added shape.
+        """
+
+        if shape.ease is None:
+            shape.ease = self.ease
+        if shape.loop is None:
+            shape.loop = self.loop
+
+        # support for parenting
+        if shape.props.get("parent", None):
+            shape.props['parent'].add(shape)
+        else:
+            self.shapes.append(shape)
+
+        shape.default_styles = self.default_styles
+
+        return shape
+
+    def render(self, t):
+        """Returns an image (frame) of this render list at time t.
+
+        Parameters
+        ----------
+        t : float
+            Specifies at what point in time this list should be rendered in.
+
+        Returns
+        -------
+        buf : array
+            The frame as a numpy array.
+        """
+
+        bg = self.default_styles["bg_color"]
+
+        self.context.save()
+
+        # TODO: accept some other values to clear the screen?
+        if bg == "transparent":
+            self.context.set_source_rgba(0, 0, 0, 0)
+            self.context.set_operator(cairo.OPERATOR_CLEAR)
+            self.context.paint()
+        else:
+            self.context.set_source_rgba(*Color(bg))
+            self.context.paint()
+
+        self.context.restore()
+
+        self.context.set_operator(cairo.OPERATOR_OVER)
+
+        for shape in self.shapes:
+            shape.render(self.context, t)
+
+        # convert the stupid cairo surface from
+        # bgra to rgba using pillow first, then
+        # convert that to a numpy array
+        # v silly
+
+        buffer = bgra_to_rgba(self.surface)
+        buf = numpy.frombuffer(buffer, numpy.uint8)
+        buf.shape = (self.height, self.width, 4)
+        return buf
+
+    # shortcuts to add shapes
+
+    def arc_segment(self, *args, **kwargs):
+        return self.add(ArcSegment(*args, **kwargs))
+
+    arcseg = arc_segment
+
+    def arrow(self, *args, **kwargs):
+        return self.add(Arrow(*args, **kwargs))
+
+    def bezier_curve(self, *args, **kwargs):
+        return self.add(BezierCurve(*args, **kwargs))
+
+    bezier = bezier_curve
+
+    def bezier_segment(self, *args, **kwargs):
+        return self.add(BezierSegment(*args, **kwargs))
+
+    bezierseg = bezier_segment
+
+    def circle(self, *args, **kwargs):
+        return self.add(Circle(*args, **kwargs))
+
+    def container(self, *args, **kwargs):
+        return self.add(Container(*args, **kwargs))
+
+    def curve(self, *args, **kwargs):
+        return self.add(Curve(*args, **kwargs))
+
+    def curve_segment(self, *args, **kwargs):
+        return self.add(CurveSegment(*args, **kwargs))
+
+    curveseg = curve_segment
+
+    def gear(self, *args, **kwargs):
+        return self.add(Gear(*args, **kwargs))
+
+    def gradient_pie(self, *args, **kwargs):
+        return self.add(GradientPie(*args, **kwargs))
+
+    def grid(self, *args, **kwargs):
+        return self.add(Grid(*args, **kwargs))
+
+    def heart(self, *args, **kwargs):
+        return self.add(Heart(*args, **kwargs))
+
+    def image(self, *args, **kwargs):
+        # this is such a hack
+
+        # basically all we do is save the image to disk as a png,
+        # then load it in again. this is the only way we can ensure
+        # that cairo can load it properly/easily. maybe there's
+        # a way to figure out how to convert it properly,
+        # but cairo seems very picky about images
+
+        # anyway yolo tbh fam
+
+        imgs = kwargs.get("img", None)
+
+        if not imgs:
+            return
+
+        if not isinstance(imgs, (list, tuple)):
+            imgs = [imgs]
+
+        surfaces = []
+
+        _TEMP_FILENAME = "__temp_img_{}.png".format
+
+        for i, img in enumerate(imgs):
+            reader = imageio.get_reader(img)
+            writer = imageio.get_writer(_TEMP_FILENAME(i))
+
+            for im in reader:
+                writer.append_data(im)
+
+            writer.close()
+            reader.close()
+
+            img_surf = cairo.ImageSurface.create_from_png(_TEMP_FILENAME(i))
+            os.remove(_TEMP_FILENAME(i))
+            surfaces.append(img_surf)
+
+        kwargs["image_surfaces"] = surfaces
+
+        return self.add(Image(*args, **kwargs))
+
+    img = image
+
+    def isobox(self, *args, **kwargs):
+        return self.add(IsoBox(*args, **kwargs))
+
+    def isotube(self, *args, **kwargs):
+        return self.add(IsoTube(*args, **kwargs))
+
+    def line(self, *args, **kwargs):
+        return self.add(Line(*args, **kwargs))
+
+    def oval(self, *args, **kwargs):
+        return self.add(Oval(*args, **kwargs))
+
+    def path(self, *args, **kwargs):
+        return self.add(Path(*args, **kwargs))
+
+    def poly(self, *args, **kwargs):
+        return self.add(Poly(*args, **kwargs))
+
+    def ray(self, *args, **kwargs):
+        return self.add(Ray(*args, **kwargs))
+
+    def ray_segment(self, *args, **kwargs):
+        return self.add(RaySegment(*args, **kwargs))
+
+    rayseg = ray_segment
+
+    def rect(self, *args, **kwargs):
+        return self.add(Rect(*args, **kwargs))
+
+    def roundrect(self, *args, **kwargs):
+        return self.add(RoundRect(*args, **kwargs))
+
+    def segment(self, *args, **kwargs):
+        return self.add(Segment(*args, **kwargs))
+
+    def spiral(self, *args, **kwargs):
+        return self.add(Spiral(*args, **kwargs))
+
+    def star(self, *args, **kwargs):
+        return self.add(Star(*args, **kwargs))
+
+    def text(self, *args, **kwargs):
+        return self.add(Text(*args, **kwargs))
