@@ -99,7 +99,7 @@ class Animation:
         self.render_list.ease = ease
         return self
 
-    def set_loop(self, loop):
+    def set_loop(self, loop=None):
         """Sets the looping mode to the specified value.
 
         If a value for ``loop`` is not passed in, then the loop
@@ -116,8 +116,12 @@ class Animation:
         self : :class:`Animation`
             For method chaining.
         """
-        self.loop = loop
-        self.render_list.loop = loop
+        if not loop:
+            self.loop = not self.loop
+            self.render_list.loop = not self.loop
+        else:
+            self.loop = loop
+            self.render_list.loop = loop
         return self
 
     def set_fps(self, fps):
