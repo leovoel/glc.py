@@ -161,6 +161,53 @@ def quadratic_curve_to(context, x1, y1, x2, y2):
     )
 
 
+def curve_path(context, points, loop=False):
+    """Defines a path with multiple points connected by quadratic bézier curves.
+
+    Parameters
+    ----------
+    context : :class:`cairo.Context`
+        The context to draw a curve on.
+    points : list of tuples/lists
+        Specifies the coordinates to plot the curve with.
+    loop : bool
+        Specifies whether the path should be closed by connecting the first
+        point with the last one or not. Defaults to ``False``.
+    """
+    mid_points = []
+    i = 0
+    while i < len(points) - 1:
+        mid_points.append((
+            (points[i][0] + points[i + 1][0]) * 0.5,
+            (points[i][1] + points[i + 1][1]) * 0.5
+        ))
+        i += 1
+
+    if loop:
+        mid_points.append((
+            (points[i][0] + points[0][0]) * 0.5,
+            (points[i][1] + points[0][1]) * 0.5
+        ))
+
+        context.move_to(mid_points[0][0], mid_points[0][1])
+
+        i = 1
+        while i < len(points):
+            quadratic_curve_to(context, points[i][0], points[i][1], mid_points[i][0], mid_points[i][1])
+            i += 1
+
+        quadratic_curve_to(context, points[0][0], points[0][1], mid_points[0][0], mid_points[0][1])
+    else:
+        context.move_to(points[0][0], points[0][1])
+
+        i = 1
+        while i < len(points) - 2:
+            quadratic_curve_to(context, points[i][0], points[i][1], mid_points[i][0], mid_points[i][1])
+            i += 1
+
+        quadratic_curve_to(context, points[i][0], points[i][1], points[i + 1][0], points[i + 1][1])
+
+
 def arc_to(context, x1, y1, x2, y2, r):
     """Adds an arc to the path with the given control points and radius,
     connected to the previous point by a straight line.
