@@ -192,6 +192,9 @@ class RenderList:
     def curve(self, *args, **kwargs):
         return self.add(Curve(*args, **kwargs))
 
+    def curve_path(self, *args, **kwargs):
+        return self.add(Path(*args, **kwargs))
+
     def curve_segment(self, *args, **kwargs):
         return self.add(CurveSegment(*args, **kwargs))
 
