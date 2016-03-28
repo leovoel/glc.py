@@ -25,7 +25,7 @@ class Splat(Shape):
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)
-        num_nodes = self.get_number("num_nodes", t, 5)
+        num_nodes = int(self.get_number("num_nodes", t, 5))
         radius = self.get_number("radius", t, 50)
         inner_radius = self.get_number("inner_radius", t, 20)
         curve = self.get_number("curve", t, 0)

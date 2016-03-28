@@ -22,7 +22,7 @@ class Star(Shape):
         inner_radius = self.get_number("inner_radius", t, 25)
         outer_radius = self.get_number("outer_radius", t, 50)
         rotation = rad(self.get_number("rotation", t, 0))
-        points = self.get_number("points", t, 5)
+        points = int(self.get_number("points", t, 5))
         scale_x = self.get_number("scale_x", t, 1)
         scale_y = self.get_number("scale_y", t, 1)
 

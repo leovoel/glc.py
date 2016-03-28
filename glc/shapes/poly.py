@@ -21,7 +21,7 @@ class Poly(Shape):
         y = self.get_number("y", t, 100)
         radius = self.get_number("radius", t, 50)
         rotation = rad(self.get_number("rotation", t, 0))
-        sides = self.get_number("sides", t, 5)
+        sides = int(self.get_number("sides", t, 5))
 
         context.translate(x, y)
         context.rotate(rotation)

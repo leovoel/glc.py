@@ -23,7 +23,7 @@ class Gear(Shape):
         tooth_height = self.get_number("tooth_height", t, 10)
         hub = self.get_number("hub", t, 10)
         rotation = rad(self.get_number("rotation", t, 0))
-        teeth = self.get_number("teeth", t, 10)
+        teeth = int(self.get_number("teeth", t, 10))
         tooth_angle = self.get_number("tooth_angle", t, 0.3)
         face = 0.5 - tooth_angle / 2
         side = 0.5 - face
