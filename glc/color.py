@@ -116,9 +116,9 @@ class Color:
             self.r, self.g, self.b, self.a = str2color(r)
         elif isinstance(r, Color):
             self.r, self.g, self.b, self.a = r
-        elif isinstance(r, int) and not all([g, b, a]):
+        elif isinstance(r, int) and all((c is None for c in [g, b, a])):
             self.r, self.g, self.b, self.a = int2color(r)
-        elif isinstance(r, (tuple, list)) and not all([g, b, a]):
+        elif isinstance(r, (tuple, list)):
             l = len(r)
             if l == 3:
                 self.r, self.g, self.b = r
