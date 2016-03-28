@@ -1,7 +1,7 @@
 from example_util import get_filename
 from glc.utils import remap, rad
 from glc.color import rgba, sinebow
-from glc.animation import Gif
+from glc import Gif
 
 
 with Gif(get_filename(__file__)) as a:

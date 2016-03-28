@@ -1,7 +1,7 @@
 from random import random
 
 from example_util import get_filename
-from glc.animation import Gif
+from glc import Gif
 from glc.color import Color
 
 

@@ -1,6 +1,6 @@
 from example_util import get_filename
 from glc.utils import remap
-from glc.animation import Gif
+from glc import Gif
 
 
 with Gif(get_filename(__file__), converter="imageio") as a:
