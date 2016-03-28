@@ -15,6 +15,7 @@ from .bezier_segment import BezierSegment
 from .circle import Circle
 from .container import Container
 from .curve import Curve
+from .curve_path import CurvePath
 from .curve_segment import CurveSegment
 from .gear import Gear
 from .gradient_pie import GradientPie
@@ -34,5 +35,6 @@ from .roundrect import RoundRect
 from .segment import Segment
 from .shape import Shape
 from .spiral import Spiral
+from .splat import Splat
 from .star import Star
 from .text import Text

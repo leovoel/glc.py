@@ -193,7 +193,7 @@ class RenderList:
         return self.add(Curve(*args, **kwargs))
 
     def curve_path(self, *args, **kwargs):
-        return self.add(Path(*args, **kwargs))
+        return self.add(CurvePath(*args, **kwargs))
 
     def curve_segment(self, *args, **kwargs):
         return self.add(CurveSegment(*args, **kwargs))
@@ -292,6 +292,9 @@ class RenderList:
 
     def spiral(self, *args, **kwargs):
         return self.add(Spiral(*args, **kwargs))
+
+    def splat(self, *args, **kwargs):
+        return self.add(Splat(*args, **kwargs))
 
     def star(self, *args, **kwargs):
         return self.add(Star(*args, **kwargs))
