@@ -118,7 +118,7 @@ def get_array(prop, t, default):
         for i in range(length):
             v0 = arr0[i]
             v1 = arr1[i]
-            result.append(lerp(v0, v1, t))
+            result.append(lerp(t, v0, v1))
         return result
     elif prop and len(prop) > 1:
         return prop
