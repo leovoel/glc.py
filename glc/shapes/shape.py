@@ -9,8 +9,10 @@
 """
 
 from ..easing import EASING_FUNCTIONS
-from ..value_parser import get_array, get_color, get_bool, get_number, get_string, get_image
+from ..value_parser import get_array, get_color, get_bool, get_number, get_string, get_image, get_cairo_constant
 from ..utils import randrange
+
+import cairo
 
 
 class Shape:
@@ -63,9 +65,9 @@ class Shape:
         context.save()
 
         context.set_line_width(self.get_number("line_width", t, self.default_styles["line_width"]))
-        context.set_line_cap(self.get_string("line_cap", t, self.default_styles["line_cap"]))
-        context.set_line_join(self.get_string("line_join", t, self.default_styles["line_join"]))
-        context.set_miter_limit(self.get_string("miter_limit", t, self.default_styles["miter_limit"]))
+        context.set_line_cap(self.get_cairo_constant("line_cap", t, self.default_styles["line_cap"]))
+        context.set_line_join(self.get_cairo_constant("line_join", t, self.default_styles["line_join"]))
+        context.set_miter_limit(self.get_number("miter_limit", t, self.default_styles["miter_limit"]))
 
         context.translate(
             self.get_number("translation_x", t, self.default_styles["translation_x"]),
@@ -80,7 +82,7 @@ class Shape:
 
         line_dash = self.get_array("line_dash", t, self.default_styles["line_dash"])
         if line_dash:
-            context.set_line_dash(line_dash)
+            context.set_dash(line_dash)
 
         context.new_path()
 
@@ -118,3 +120,6 @@ class Shape:
 
     def get_image(self, prop, t, default):
         return get_image(self.props.get(prop, None), t, default)
+
+    def get_cairo_constant(self, prop, t, default):
+        return get_cairo_constant(prop, self.props.get(prop, None), t, default)

@@ -15,6 +15,8 @@ from math import floor
 from .utils import lerp, clamp, quadratic, bezier
 from .color import Color, str2color, clerp, multi_clerp
 
+import cairo
+
 
 # TODO: make these parsers more robust.
 
@@ -157,5 +159,78 @@ def get_color(prop, t, default):
         out = prop
     else:
         out = Color(out)
+
+    return out
+
+
+_CAIRO_CONSTANTS = {
+    "line_cap": {
+        "butt": cairo.LINE_CAP_BUTT,
+        "round": cairo.LINE_CAP_ROUND,
+        "square": cairo.LINE_CAP_SQUARE
+    },
+    "line_join": {
+        "miter": cairo.LINE_JOIN_MITER,
+        "bevel": cairo.LINE_JOIN_BEVEL,
+        "round": cairo.LINE_JOIN_ROUND
+    },
+    "antialias": {
+        "default": cairo.ANTIALIAS_DEFAULT,
+        "gray": cairo.ANTIALIAS_GRAY,
+        "none": cairo.ANTIALIAS_NONE,
+        "subpixel": cairo.ANTIALIAS_SUBPIXEL
+    },
+    "filter": {
+        "best": cairo.FILTER_BEST,
+        "bilinear": cairo.FILTER_BILINEAR,
+        "fast": cairo.FILTER_FAST,
+        "gaussian": cairo.FILTER_GAUSSIAN,
+        "good": cairo.FILTER_GOOD,
+        "nearest": cairo.FILTER_NEAREST,
+    },
+    "operator": {
+        "add": cairo.OPERATOR_ADD,
+        "atop": cairo.OPERATOR_ATOP,
+        "clear": cairo.OPERATOR_CLEAR,
+        "color_burn": cairo.OPERATOR_COLOR_BURN,
+        "color_dodge": cairo.OPERATOR_COLOR_DODGE,
+        "darken": cairo.OPERATOR_DARKEN,
+        "dest": cairo.OPERATOR_DEST,
+        "dest_atop": cairo.OPERATOR_DEST_ATOP,
+        "dest_in": cairo.OPERATOR_DEST_IN,
+        "dest_out": cairo.OPERATOR_DEST_OUT,
+        "dest_over": cairo.OPERATOR_DEST_OVER,
+        "difference": cairo.OPERATOR_DIFFERENCE,
+        "hard_light": cairo.OPERATOR_HARD_LIGHT,
+        "hsl_color": cairo.OPERATOR_HSL_COLOR,
+        "hsl_hue": cairo.OPERATOR_HSL_HUE,
+        "hsl_luminosity": cairo.OPERATOR_HSL_LUMINOSITY,
+        "hsl_saturation": cairo.OPERATOR_HSL_SATURATION,
+        "lighten": cairo.OPERATOR_LIGHTEN,
+        "multiply": cairo.OPERATOR_MULTIPLY,
+        "out": cairo.OPERATOR_OUT,
+        "over": cairo.OPERATOR_OVER,
+        "overlay": cairo.OPERATOR_OVERLAY,
+        "saturate": cairo.OPERATOR_SATURATE,
+        "screen": cairo.OPERATOR_SCREEN,
+        "soft_light": cairo.OPERATOR_SOFT_LIGHT,
+        "source": cairo.OPERATOR_SOURCE,
+        "xor": cairo.OPERATOR_XOR
+    }
+}
+
+
+def get_cairo_constant(name, prop, t, default):
+    if prop is None:
+        return default
+
+    out = None
+
+    if callable(prop):
+        out = prop(t)
+    elif isinstance(prop, str):
+        out = _CAIRO_CONSTANTS[name.lower()][prop.lower()]
+    else:
+        out = prop
 
     return out
