@@ -17,6 +17,7 @@ from .utils import bgra_to_rgba
 from .default_styles import DEFAULT_STYLES
 
 import os
+import io
 import cairo
 import numpy
 import imageio
@@ -213,16 +214,6 @@ class RenderList:
         return self.add(Heart(*args, **kwargs))
 
     def image(self, *args, **kwargs):
-        # this is such a hack
-
-        # basically all we do is save the image to disk as a png,
-        # then load it in again. this is the only way we can ensure
-        # that cairo can load it properly/easily. maybe there's
-        # a way to figure out how to convert it properly,
-        # but cairo seems very picky about images
-
-        # anyway yolo tbh fam
-
         imgs = kwargs.get("img", None)
 
         if not imgs:
@@ -232,30 +223,18 @@ class RenderList:
             imgs = [imgs]
 
         surfaces = []
-        files_to_remove = []
-
-        _TEMP_FILENAME = "__temp_img_{}_{}.png".format
 
         for i, img in enumerate(imgs):
             reader = imageio.get_reader(img)
 
             for j, im in enumerate(reader):
-                writer = imageio.get_writer(_TEMP_FILENAME(i, j))
-                writer.append_data(im)
-                writer.close()
-                img_surf = cairo.ImageSurface.create_from_png(_TEMP_FILENAME(i, j))
-                files_to_remove.append(_TEMP_FILENAME(i, j))
+                writer = imageio.imwrite('<bytes>', im, 'png')
+                img_surf = cairo.ImageSurface.create_from_png(io.BytesIO(writer))
                 surfaces.append(img_surf)
 
             reader.close()
 
         kwargs["image_surfaces"] = surfaces
-
-        for file in files_to_remove:
-            try:
-                os.remove(file)
-            except FileNotFoundError:
-                pass
 
         return self.add(Image(*args, **kwargs))
 
