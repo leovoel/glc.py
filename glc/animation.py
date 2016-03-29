@@ -112,8 +112,7 @@ class Animation:
             For method chaining.
         """
         if not loop:
-            self.loop = not self.loop
-            self.render_list.loop = not self.loop
+            self.loop = self.render_list.loop = not self.loop
         else:
             self.loop = loop
             self.render_list.loop = loop
