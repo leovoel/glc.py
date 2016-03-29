@@ -232,24 +232,30 @@ class RenderList:
             imgs = [imgs]
 
         surfaces = []
+        files_to_remove = []
 
-        _TEMP_FILENAME = "__temp_img_{}.png".format
+        _TEMP_FILENAME = "__temp_img_{}_{}.png".format
 
         for i, img in enumerate(imgs):
             reader = imageio.get_reader(img)
-            writer = imageio.get_writer(_TEMP_FILENAME(i))
 
-            for im in reader:
+            for j, im in enumerate(reader):
+                writer = imageio.get_writer(_TEMP_FILENAME(i, j))
                 writer.append_data(im)
+                writer.close()
+                img_surf = cairo.ImageSurface.create_from_png(_TEMP_FILENAME(i, j))
+                files_to_remove.append(_TEMP_FILENAME(i, j))
+                surfaces.append(img_surf)
 
-            writer.close()
             reader.close()
 
-            img_surf = cairo.ImageSurface.create_from_png(_TEMP_FILENAME(i))
-            os.remove(_TEMP_FILENAME(i))
-            surfaces.append(img_surf)
-
         kwargs["image_surfaces"] = surfaces
+
+        for file in files_to_remove:
+            try:
+                os.remove(file)
+            except FileNotFoundError:
+                pass
 
         return self.add(Image(*args, **kwargs))
 
