@@ -111,7 +111,7 @@ class Animation:
         self : :class:`Animation`
             For method chaining.
         """
-        if not loop:
+        if loop is None:
             self.loop = self.render_list.loop = not self.loop
         else:
             self.loop = loop
