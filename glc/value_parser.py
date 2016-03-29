@@ -133,7 +133,7 @@ def get_image(prop, t, default):
     elif callable(prop):
         return prop(t)
     elif is_arr(prop):
-        return prop[round(t * (len(prop) - 1))]
+        return prop[clamp(floor(t * len(prop)), 0, len(prop) - 1)]
     return prop
 
 
@@ -147,7 +147,7 @@ def get_color(prop, t, default):
         out = prop(t)
     elif isinstance(prop, Color):
         out = prop
-    elif isinstance(prop, (list, tuple)):
+    elif is_arr(prop):
         if len(prop) == 2:
             out = clerp(t, Color(prop[0]), Color(prop[1]))
         elif len(prop) > 2:
