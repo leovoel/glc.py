@@ -3,8 +3,8 @@ from glc import Gif
 from glc.color import Color, hue_split
 
 
-with Gif(get_filename(__file__), color_count=16) as a:
-    l = a.set_duration(7).set_ease("elastic").set_size(300, 300).render_list
+with Gif(get_filename(__file__)) as a:
+    l = a.set_duration(7).set_ease("elastic").set_size(300, 400).render_list
 
     blu = Color("0xFF3774A3")
     yel = Color("0xFFDFAD20").desaturate(10).lighten(5)
