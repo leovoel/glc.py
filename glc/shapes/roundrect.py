@@ -43,29 +43,29 @@ class RoundRect(Shape):
 
         _r = bottom_right_radius if bottom_right_radius is not None else r
 
-        context.move_to(x + w, y + h - _r)
-        quadratic_curve_to(context, x + w, tan(pi / 8) * _r + y + h - _r, sin(pi / 4) * _r + x + w - _r, sin(pi / 4) * _r + y + h - _r)
-        quadratic_curve_to(context, tan(pi / 8) * _r + x + w - _r, y + h, x + w - _r, y + h)
+        context.move_to(w, h - _r)
+        quadratic_curve_to(context, w, tan(pi / 8) * _r + h - _r, sin(pi / 4) * _r + w - _r, sin(pi / 4) * _r + h - _r)
+        quadratic_curve_to(context, tan(pi / 8) * _r + w - _r, h, w - _r, h)
 
         _r = bottom_left_radius if bottom_left_radius is not None else r
 
-        context.line_to(x + _r, y + h)
-        quadratic_curve_to(context, -tan(pi / 8) * _r + x + _r, y + h, -sin(pi / 4) * _r + x + _r, sin(pi / 4) * _r + y + h - _r)
-        quadratic_curve_to(context, x, tan(pi / 8) * _r + y + h - _r, x, y + h - _r)
+        context.line_to(_r, h)
+        quadratic_curve_to(context, -tan(pi / 8) * _r + _r, h, -sin(pi / 4) * _r + _r, sin(pi / 4) * _r + h - _r)
+        quadratic_curve_to(context, 0, tan(pi / 8) * _r + h - _r, 0, h - _r)
 
         _r = top_left_radius if top_left_radius is not None else r
 
-        context.line_to(x, y + _r)
-        quadratic_curve_to(context, x, -tan(pi / 8) * _r + y + _r, -sin(pi / 4) * _r + x + _r, -sin(pi / 4) * _r + y + _r)
-        quadratic_curve_to(context, -tan(pi / 8) * _r + x + _r, y, x + _r, y)
+        context.line_to(0, _r)
+        quadratic_curve_to(context, 0, -tan(pi / 8) * _r + _r, -sin(pi / 4) * _r + _r, -sin(pi / 4) * _r + _r)
+        quadratic_curve_to(context, -tan(pi / 8) * _r + _r, 0, _r, 0)
 
         _r = top_right_radius if top_right_radius is not None else r
 
-        context.line_to(x + w - r, y)
-        quadratic_curve_to(context, tan(pi / 8) * _r + x + w - _r, y, sin(pi / 4) * _r + x + w - _r, -sin(pi / 4) * _r + y + _r)
-        quadratic_curve_to(context, x + w, -tan(pi / 8) * _r + y + _r, x + w, y + _r)
+        context.line_to(w - r, 0)
+        quadratic_curve_to(context, tan(pi / 8) * _r + w - _r, 0, sin(pi / 4) * _r + w - _r, -sin(pi / 4) * _r + _r)
+        quadratic_curve_to(context, w, -tan(pi / 8) * _r + _r, w, _r)
 
-        context.line_to(x + w, y + h - (bottom_right_radius if bottom_right_radius is not None else r))
+        context.line_to(w, h - (bottom_right_radius if bottom_right_radius is not None else r))
 
         context.restore()
 
