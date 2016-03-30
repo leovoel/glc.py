@@ -1,3 +1,5 @@
+[<img align="right" src="examples/python_snake.gif?raw=true">](examples/python_snake.py)
+
 # glc.py
 
 This is a Python library made to help with the creation of code-based animation.
