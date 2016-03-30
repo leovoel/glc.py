@@ -163,7 +163,7 @@ def get_color(prop, t, default):
     elif isinstance(prop, bool):
         out = prop
     else:
-        out = Color(out)
+        out = Color(prop)
 
     return out
 
