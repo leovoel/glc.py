@@ -35,10 +35,19 @@ class Shape:
         self.shapes.append(item)
         return item
 
+    def set_ease(self, ease="sine"):
+        self.ease = ease
+        return self
+
+    def set_loop(self, loop=True):
+        self.loop = loop
+        return self
+
     def render(self, context, t):
         time = t
         t *= self.props.get("speed_mult", 1)
         t += self.props.get("phase", 0)
+        self.no_interp_time = t
         t = self.interpolate(t)
 
         self.start_draw(context, t)
@@ -47,8 +56,9 @@ class Shape:
             shape.render(context, time)
         self.end_draw(context, t)
 
-    def interpolate(self, t):
-        t %= 1
+    def interpolate(self, t, wrap=True):
+        if wrap:
+            t %= 1
 
         if self.loop:
             t = t * 2 if t < 0.5 else (1 - t) * 2
@@ -118,8 +128,8 @@ class Shape:
     def get_array(self, prop, t, default):
         return get_array(self.props.get(prop, None), t, default)
 
-    def get_image(self, prop, t, default):
-        return get_image(self.props.get(prop, None), t, default)
+    def get_image(self, prop, t, default, wrap):
+        return get_image(self.props.get(prop, None), t, default, wrap)
 
     def get_cairo_constant(self, prop, t, default):
         return get_cairo_constant(prop, self.props.get(prop, None), t, default)

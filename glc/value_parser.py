@@ -127,13 +127,18 @@ def get_array(prop, t, default):
     return default
 
 
-def get_image(prop, t, default):
+def get_image(prop, t, default, mode):
+    # TODO: add ping-pong loop mode
+
     if prop is None:
         return default
     elif callable(prop):
         return prop(t)
     elif is_arr(prop):
-        return prop[clamp(floor(t * len(prop)), 0, len(prop) - 1)]
+        if mode == "wrap":
+            return prop[floor(t * len(prop)) % (len(prop))]
+        else:
+            return prop[clamp(floor(t * len(prop)), 0, len(prop) - 1)]
     return prop
 
 

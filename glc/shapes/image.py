@@ -17,7 +17,15 @@ class Image(Shape):
     def draw(self, context, t):
         # TODO: implement tinting?
 
-        img = self.get_image("image_surfaces", t, None)
+        mode = self.get_string("mode", t, "clamp")
+        img_ease = self.get_bool("img_ease", t, True)
+        img_speed = self.get_number("img_speed", t, 1)
+
+        if img_ease:
+            img = self.get_image("image_surfaces", self.interpolate(self.no_interp_time * img_speed), None, mode)
+        else:
+            img = self.get_image("image_surfaces", self.no_interp_time * img_speed, None, mode)
+
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)
         w = self.get_number("w", t, None)
