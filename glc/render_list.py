@@ -65,6 +65,7 @@ class RenderList:
         self.context = cairo.Context(self.surface)
 
         self.shapes = []
+        self._cached_images = {}
 
     def size(self, width=500, height=500):
         """Changes the size of the surface.
@@ -225,14 +226,21 @@ class RenderList:
         surfaces = []
 
         for i, img in enumerate(imgs):
-            reader = imageio.get_reader(img)
+            if img in self._cached_images:
+                for surface in self._cached_images[img]:
+                    surfaces.append(surface)
+            else:
+                reader = imageio.get_reader(img)
 
-            for j, im in enumerate(reader):
-                writer = imageio.imwrite('<bytes>', im, 'png')
-                img_surf = cairo.ImageSurface.create_from_png(io.BytesIO(writer))
-                surfaces.append(img_surf)
+                self._cached_images[img] = []
 
-            reader.close()
+                for j, im in enumerate(reader):
+                    writer = imageio.imwrite('<bytes>', im, 'png')
+                    img_surf = cairo.ImageSurface.create_from_png(io.BytesIO(writer))
+                    surfaces.append(img_surf)
+                    self._cached_images[img].append(img_surf)
+
+                reader.close()
 
         kwargs["image_surfaces"] = surfaces
 
