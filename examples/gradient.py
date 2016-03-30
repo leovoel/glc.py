@@ -3,7 +3,7 @@ from glc import Gif
 from glc.color import Color, hsva
 
 
-with Gif(get_filename(__file__), converter="imageio") as a:
+with Gif(get_filename(__file__)) as a:
     a.set_bg_color(Color("black")).set_duration(2).set_size(300, 300)
     l = a.render_list
     res = 250
