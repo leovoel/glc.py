@@ -35,6 +35,10 @@ class Shape:
         self.shapes.append(item)
         return item
 
+    def set_prop(self, **kwargs):
+        self.props.update(kwargs)
+        return self
+
     def set_ease(self, ease="sine"):
         self.ease = ease
         return self
