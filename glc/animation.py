@@ -218,6 +218,10 @@ class Animation:
         return frames
 
     @property
+    def context(self):
+        return self.render_list.context
+
+    @property
     def w(self):
         return self.width
 
