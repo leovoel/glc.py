@@ -48,7 +48,10 @@ with glc.animation.Gif("a_circle.gif", w=500, h=500) as a:
 Normally, `imageio` and `numpy` should be installed when you use `pip` to install the lib.
 
 You'll need to install pycairo/cairocffi and Pillow on your own.
-If you're on Linux or OSX, you most likely will need to build pycairo yourself.
+
+If you're on Linux or OSX, you can try using [this](https://github.com/ldo/pycairo/) (using `pip install ...`).
+Otherwise, you'll have to build it yourself.
+
 If you're on Windows, you can use [this page](http://www.lfd.uci.edu/~gohlke/pythonlibs/),
 which contains pre-built binaries for a ton of libraries, including pycairo.
 
