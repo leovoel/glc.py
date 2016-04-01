@@ -78,6 +78,10 @@ class Text(Shape):
         context.translate(x, y)
         context.rotate(rotation)
         context.translate(nx, ny)
+
         if self.get_bool("centered", t, False):
             context.move_to(0, 0)
-        context.show_text(text)
+
+        context.text_path(text)
+
+        self.draw_fill_and_stroke(context, t, True, False)
