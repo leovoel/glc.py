@@ -486,7 +486,7 @@ def str2color(string):
         length = len(string)
 
         if length == 8:  # aarrggbb
-            return (
+            return rgba(
                 int(string[2:4], 16) / 255,
                 int(string[4:6], 16) / 255,
                 int(string[6:8], 16) / 255,
