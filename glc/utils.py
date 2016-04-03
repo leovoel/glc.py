@@ -14,6 +14,9 @@ from math import sqrt, sin, cos, tan, acos, pi, floor
 from random import random
 from PIL import Image
 
+import re
+
+# math utils
 
 DEGTORAD = pi / 180
 RADTODEG = 180 / pi
@@ -98,6 +101,8 @@ def smootherstep(value, start, end):
     return x * x * x * (x * (x * 6 - 15) + 10)
 
 
+# cairo utils
+
 def bgra_to_rgba(surface):
     """Converts a Cairo surface color format from BGRA to RGBA, using Pillow/PIL.
 
@@ -116,10 +121,28 @@ def bgra_to_rgba(surface):
     -------
     img_bytes : bytes object
     """
-
     size = surface.get_width(), surface.get_height()
     img = Image.frombuffer('RGBA', size, bytes(surface.get_data()), 'raw', 'BGRA', 0, 1)
     return img.tobytes('raw', 'RGBA', 0, 1)
+
+
+def draw_image(ctx, img, x, y, w=None, h=None):
+    sourcew, sourceh = img.get_width(), img.get_height()
+
+    if w is None:
+        w = sourcew
+    if h is None:
+        h = sourceh
+
+    ctx.save()
+
+    ctx.translate(x, y)
+    ctx.scale(w / sourcew, h / sourceh)
+
+    ctx.set_source_surface(img, 0, 0)
+    ctx.paint()
+
+    ctx.restore()
 
 
 def quadratic_curve_to(context, x1, y1, x2, y2):
@@ -174,9 +197,10 @@ def curve_path(context, points, loop=False):
         Specifies whether the path should be closed by connecting the first
         point with the last one or not. Defaults to ``False``.
     """
+    l = len(points)
     mid_points = []
     i = 0
-    while i < len(points) - 1:
+    while i < l - 1:
         mid_points.append((
             (points[i][0] + points[i + 1][0]) * 0.5,
             (points[i][1] + points[i + 1][1]) * 0.5
@@ -192,7 +216,7 @@ def curve_path(context, points, loop=False):
         context.move_to(mid_points[0][0], mid_points[0][1])
 
         i = 1
-        while i < len(points):
+        while i < l:
             quadratic_curve_to(context, points[i][0], points[i][1], mid_points[i][0], mid_points[i][1])
             i += 1
 
@@ -201,7 +225,7 @@ def curve_path(context, points, loop=False):
         context.move_to(points[0][0], points[0][1])
 
         i = 1
-        while i < len(points) - 2:
+        while i < l - 2:
             quadratic_curve_to(context, points[i][0], points[i][1], mid_points[i][0], mid_points[i][1])
             i += 1
 
@@ -229,7 +253,6 @@ def arc_to(context, x1, y1, x2, y2, r):
     radius : float
         The arc's radius.
     """
-
     x0, y0 = context.get_current_point()
     if (
         x1 == x0 and y1 == y0 or
@@ -298,3 +321,10 @@ def arc_to(context, x1, y1, x2, y2, r):
         return
 
     context.arc(px, py, r, sa, ea)
+
+# string utils
+
+_EMOJI_RANGE_RE = re.compile('[\U00010000-\U0010ffff]')
+
+def is_emoji(s):
+    return _EMOJI_RANGE_RE.match(s)

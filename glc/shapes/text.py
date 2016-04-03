@@ -9,8 +9,9 @@
 """
 
 from .shape import Shape
-from ..utils import rad
+from ..utils import rad, is_emoji, draw_image
 
+import os
 import cairo
 
 
@@ -76,12 +77,49 @@ class Text(Shape):
         ny = fheight / 2
 
         context.translate(x, y)
+        context.scale(self.get_number("scale_x", t, 1), self.get_number("scale_y", t, 1))
         context.rotate(rotation)
-        context.translate(nx, ny)
 
-        if self.get_bool("centered", t, False):
-            context.move_to(0, 0)
+        if self.get_bool("centered", t, True):
+            context.translate(nx, ny)
 
-        context.text_path(text)
+        if self.props.get("emoji_path", False):
+            # this is kinda dumb but it's easier
+            # than bringing in something like pango
+            # (and it wouldn't support emoji image sets anyway)
+            for char in text:
+                te = context.text_extents(char)
 
-        self.draw_fill_and_stroke(context, t, True, False)
+                context.save()
+
+                if is_emoji(char):
+                    hex_val = char.encode("unicode-escape").decode("ascii").lstrip("\\U0")
+
+                    if char not in self.props.get("emoji_cache"):
+                        # TODO: not assume that .png is the format available
+                        path = os.path.abspath(os.path.join(self.props["emoji_path"], hex_val + ".png"))
+                        emoji = cairo.ImageSurface.create_from_png(path)
+                        self.props.get("emoji_cache")[char] = emoji
+                    else:
+                        emoji = self.props.get("emoji_cache")[char]
+
+                    # scale by the height as that's larger most of the time
+                    # if we scaled based on width, the emoji would be too small
+                    draw_image(context, emoji, 0, -fheight * 0.5, te[3], te[3])
+                else:
+                    context.text_path(char)
+
+                    if self.props.get("fill", True):
+                        context.set_source_rgba(*self.get_color("fill", t, self.default_styles["fill"]))
+                        context.fill_preserve()
+
+                    if self.props.get("stroke", False):
+                        context.set_source_rgba(*self.get_color("stroke", t, self.default_styles["stroke"]))
+                        context.stroke_preserve()
+
+                context.new_path()
+                context.restore()
+                context.translate(te[4], te[5])
+        else:
+            context.text_path(text)
+            self.draw_fill_and_stroke(context, t, True, False)

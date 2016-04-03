@@ -194,6 +194,10 @@ class Animation:
         self.set_default_style("bg_color", color)
         return self
 
+    def set_emoji_path(self, path):
+        self.render_list.emoji_path = path
+        return self
+
     def render_all(self):
         """Renders all the necessary frames for this animation to numpy arrays.
 

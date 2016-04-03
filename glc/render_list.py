@@ -13,7 +13,7 @@
 from copy import deepcopy
 from .shapes import *
 from .color import Color
-from .utils import bgra_to_rgba
+from .utils import bgra_to_rgba, is_emoji
 from .default_styles import DEFAULT_STYLES
 
 import os
@@ -64,8 +64,11 @@ class RenderList:
         self.surface = cairo.ImageSurface(self.mem_format, self.width, self.height)
         self.context = cairo.Context(self.surface)
 
+        self.emoji_path = kwargs.pop("emoji_path", None)
+
         self.shapes = []
         self._cached_images = {}
+        self._emoji_cache = {}
 
     def size(self, width=500, height=500):
         """Changes the size of the surface.
@@ -220,12 +223,27 @@ class RenderList:
         if not imgs:
             return
 
+        # TODO: make more robust
         if not isinstance(imgs, (list, tuple)):
             imgs = [imgs]
 
         surfaces = []
 
-        for i, img in enumerate(imgs):
+        for img in imgs:
+            # special case for strings with one emoji
+            # TODO: make this an option?
+            if len(img) == 1 and is_emoji(img) and self.emoji_path:
+                hex_val = img.encode("unicode-escape").decode("ascii").lstrip("\\U0")
+
+                if img not in self._emoji_cache:
+                    # TODO: not assume that .png is the format available
+                    path = os.path.abspath(os.path.join(self.emoji_path, hex_val + ".png"))
+                    surfaces.append(cairo.ImageSurface.create_from_png(path))
+                else:
+                    surfaces.append(self._emoji_cache[char])
+
+                continue
+
             if img in self._cached_images:
                 for surface in self._cached_images[img]:
                     surfaces.append(surface)
@@ -234,7 +252,7 @@ class RenderList:
 
                 self._cached_images[img] = []
 
-                for j, im in enumerate(reader):
+                for im in reader:
                     writer = imageio.imwrite('<bytes>', im, 'png')
                     img_surf = cairo.ImageSurface.create_from_png(io.BytesIO(writer))
                     surfaces.append(img_surf)
@@ -243,7 +261,6 @@ class RenderList:
                 reader.close()
 
         kwargs["image_surfaces"] = surfaces
-
         return self.add(Image(*args, **kwargs))
 
     img = image
@@ -293,4 +310,6 @@ class RenderList:
         return self.add(Star(*args, **kwargs))
 
     def text(self, *args, **kwargs):
+        kwargs["emoji_path"] = self.emoji_path
+        kwargs["emoji_cache"] = self._emoji_cache
         return self.add(Text(*args, **kwargs))
