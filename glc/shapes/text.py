@@ -8,6 +8,7 @@
 
 """
 
+from tempfile import TemporaryFile
 from .shape import Shape
 from ..utils import rad, is_emoji, draw_image
 
@@ -62,6 +63,7 @@ class Text(Shape):
         family = self.get_string("family", t, "sans-serif")
         weight = self.get_string("weight", t, "normal")
         rotation = rad(self.get_number("rotation", t, 0))
+        tint = self.get_bool("tint", t, False)
 
         if weight == "bold":
             _weight = cairo.FONT_WEIGHT_BOLD
@@ -103,9 +105,30 @@ class Text(Shape):
                     else:
                         emoji = self.props.get("emoji_cache")[char]
 
+                    if tint:
+                        # necessary to prevent reuse
+                        f = TemporaryFile()
+                        emoji.write_to_png(f)
+                        f.seek(0)
+                        _emoji = cairo.ImageSurface.create_from_png(f)
+                        b = cairo.Context(_emoji)
+
+                        # create alpha mask
+                        mask = cairo.ImageSurface(cairo.FORMAT_A8, _emoji.get_width(), _emoji.get_height())
+                        maskctx = cairo.Context(mask)
+                        maskctx.set_source_surface(_emoji)
+                        maskctx.paint()
+
+                        # paint
+                        b.set_operator(cairo.OPERATOR_HSL_COLOR)
+                        b.set_source_rgba(*self.get_color("fill", t, self.default_styles["fill"]))
+                        b.mask(cairo.SurfacePattern(mask))
+                    else:
+                        _emoji = emoji
+
                     # scale by the height as that's larger most of the time
                     # if we scaled based on width, the emoji would be too small
-                    draw_image(context, emoji, 0, -fheight * 0.5, te[3], te[3])
+                    draw_image(context, _emoji, 0, -fheight * 0.5, te[3], te[3])
                 else:
                     context.text_path(char)
 
