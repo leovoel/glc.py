@@ -131,5 +131,21 @@ class Gif(Animation):
         writer.close()
 
     def render_and_save(self, filename):
+        """Renders the animation and writes it to a GIF file.
+
+        This uses the currently set exporter based on the attribute ``converter``.
+        If ``converter`` is somehow ``None``, or some unknown value, the default
+        is to export the animation using imageio.
+
+        Parameters
+        ----------
+        filename : str
+            The filename to use when saving the file.
+        """
         frames = self.render_all()
-        getattr(self, "save_with_{}".format(self.converter))(frames, filename)
+        func = getattr(self, "save_with_{}".format(self.converter), None)
+
+        if func is None:
+            self.save_with_imageio(frames, filename)
+            return
+        func(frames, filename)
