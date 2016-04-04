@@ -144,7 +144,10 @@ def get_image(prop, t, default, mode):
 
 def get_color(prop, t, default):
     if prop is None:
-        return Color(default)
+        if default is not None:
+            return Color(default)
+        elif default is None:
+            return None
 
     out = None
 
