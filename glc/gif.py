@@ -46,6 +46,18 @@ class Gif(Animation):
         self.convert_opts = kwargs.get("convert_opts", dict())
 
     def save_with_imagemagick(self, frames, filename):
+        """Writes this animation to a GIF file using ImageMagick.
+
+        This is currently the only exporter that supports transparent backgrounds.
+        This saves every frame to a temporary file.
+
+        Parameters
+        ----------
+        frames : list of numpy arrays
+            Container with the frames necessary to render this animation to a file.
+        filename : str
+            The filename to use when saving the file.
+        """
         # this is stupid
         # but it's the only way we can have transparent gifs
         # TODO: make this more customizable
@@ -66,6 +78,9 @@ class Gif(Animation):
         fuzz = self.convert_opts.get("fuzz", 1)
         layer_opt = self.convert_opts.get("layer_opt", "OptimizeTransparency")
 
+        # TODO: check wonky disposal settings
+        # as i've had some trouble with things persisting
+        # across frames with transparent bg colors
         cmd = [
             IMAGEMAGICK_BINARY,
             "-delay", str(delay),
@@ -86,6 +101,18 @@ class Gif(Animation):
             os.remove(f)
 
     def save_with_imageio(self, frames, filename):
+        """Writes this animation to a GIF file using imageio.
+
+        This exporter does not support transparent backgrounds, see
+         for more info.
+
+        Parameters
+        ----------
+        frames : list of numpy arrays
+            Container with the frames necessary to render this animation to a file.
+        filename : str
+            The filename to use when saving the file.
+        """
         # TODO: make this more customizable
         # TODO: add support for more formats (like videos)?
 

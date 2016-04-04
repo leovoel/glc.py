@@ -23,14 +23,22 @@ RADTODEG = 180 / pi
 
 
 def deg(rad):
+    """Converts the passed in value in radians to degrees."""
     return rad * RADTODEG
 
 
 def rad(deg):
+    """Converts the passed in value in degrees to radians."""
     return deg * DEGTORAD
 
 
 def clamp(value, start, end):
+    """Limits a value to the passed in range.
+
+    If ``value`` is less than ``start``, ``start`` is returned.
+    If ``value`` is greater than ``end``, ``end`` is returned.
+    Otherwise, ``value`` is returned.
+    """
     return start if value < start else end if value > end else value
 
 

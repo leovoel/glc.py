@@ -20,14 +20,13 @@ from .color_names import COLOR_NAMES
 def rgb2hsv(red, green, blue):
     """Converts a color from RGB to HSV.
 
+    All the color components here should go from 0.0 to 1.0.
+
     Parameters
     ----------
     red : float
-        Goes from 0.0 to 1.0.
     green : float
-        Goes from 0.0 to 1.0.
     blue : float
-        Goes from 0.0 to 1.0.
 
     Returns
     -------
@@ -40,14 +39,14 @@ def rgb2hsv(red, green, blue):
 def hsv2rgb(hue, saturation, value):
     """Converts a color from HSV to RGB.
 
+    All the color components here should go from 0.0 to 1.0,
+    except for hue, which should go from 0.0 to 360.
+
     Parameters
     ----------
     hue : float
-        Goes from 0.0 to 360.0.
     saturation : float
-        Goes from 0.0 to 1.0.
     value : float
-        Goes from 0.0 to 1.0.
 
     Returns
     -------
@@ -59,14 +58,13 @@ def hsv2rgb(hue, saturation, value):
 def rgb2hsl(red, green, blue):
     """Converts a color from RGB to HSL.
 
+    All the color components here should go from 0.0 to 1.0.
+
     Parameters
     ----------
     red : float
-        Goes from 0.0 to 1.0.
     green : float
-        Goes from 0.0 to 1.0.
     blue : float
-        Goes from 0.0 to 1.0.
 
     Returns
     -------
@@ -79,14 +77,14 @@ def rgb2hsl(red, green, blue):
 def hsl2rgb(hue, saturation, lightness):
     """Converts a color from HSV to RGB.
 
+    All the color components here should go from 0.0 to 1.0,
+    except for hue, which should go from 0.0 to 360.
+
     Parameters
     ----------
     hue : float
-        Goes from 0.0 to 360.0.
     saturation : float
-        Goes from 0.0 to 1.0.
     lightness : float
-        Goes from 0.0 to 1.0.
 
     Returns
     -------
@@ -99,16 +97,14 @@ class Color:
 
     """Represents a color value.
 
+    All the color components here go from 0.0 to 1.0.
+
     Attributes
     ----------
     r : float
-        Amount of red, from 0.0 to 1.0.
     g : float
-        Amount of green, from 0.0 to 1.0.
     b : float
-        Amount of blue, from 0.0 to 1.0.
     a : float
-        Alpha, from 0.0 to 1.0.
     """
 
     def __init__(self, r=None, g=None, b=None, a=None):
@@ -134,16 +130,16 @@ class Color:
     def set_rgba(self, r, g, b, a=1.0):
         """Sets the current rgba values to the passed in ones.
 
+        All the color components here should go from 0.0 to 1.0.
+        If no value for alpha (``a``) is passed in, then 1.0 is
+        used as the default.
+
         Parameters
         ----------
         r : float
-            Amount of red, from 0.0 to 1.0.
         g : float
-            Amount of green, from 0.0 to 1.0.
         b : float
-            Amount of blue, from 0.0 to 1.0.
         a : float
-            Alpha, from 0.0 to 1.0. Defaults to 1.0.
 
         Returns
         -------
@@ -179,6 +175,12 @@ class Color:
     def desaturate(self, amount=10):
         """Desaturates this color by the given amount (a delta).
 
+        Parameters
+        ----------
+        amount : float
+            Amount to desaturate this color by.
+            Should go from 0.0 to 100.0.
+
         Returns
         -------
         self
@@ -192,6 +194,12 @@ class Color:
 
     def saturate(self, amount=10):
         """Saturates this color by the given amount (a delta).
+
+        Parameters
+        ----------
+        amount : float
+            Amount to saturate this color by.
+            Should go from 0.0 to 100.0.
 
         Returns
         -------
@@ -217,6 +225,12 @@ class Color:
     def lighten(self, amount=10):
         """Lightens up this color by the given amount (a delta).
 
+        Parameters
+        ----------
+        amount : float
+            Amount to lighten this color by.
+            Should go from 0.0 to 100.0.
+
         Returns
         -------
         self
@@ -230,6 +244,12 @@ class Color:
 
     def darken(self, amount=10):
         """Darkens up this color by the given amount (a delta).
+
+        Parameters
+        ----------
+        amount : float
+            Amount to darken this color by.
+            Should go from 0.0 to 100.0.
 
         Returns
         -------
@@ -291,6 +311,8 @@ class Color:
 def rgba(red, green, blue, alpha=1.0):
     """Creates a color using the passed in red, green, blue and alpha values.
 
+    All the color components here should go from 0.0 to 1.0.
+
     Parameters
     ----------
     red : float
@@ -305,8 +327,11 @@ def rgba(red, green, blue, alpha=1.0):
     return Color(red, green, blue, alpha)
 
 
-def hsva(h, s, v, a=1.0):
+def hsva(hue, saturation, value, alpha=1.0):
     """Creates a color using hue, saturation, value and alpha.
+
+    All the color components here should go from 0.0 to 1.0,
+    except for hue, which should go from 0.0 to 360.
 
     Parameters
     ----------
@@ -319,12 +344,14 @@ def hsva(h, s, v, a=1.0):
     -------
     :class:`Color`
     """
-    r, g, b = hsv2rgb(h, s, v)
-    return Color(r, g, b, a)
+    red, green, blue = hsv2rgb(hue, saturation, value)
+    return Color(red, green, blue, alpha)
 
 
 def gray(shade, alpha=1.0):
     """Creates a shade of gray.
+
+    All the color components here should go from 0.0 to 1.0.
 
     Parameters
     ----------
@@ -341,7 +368,9 @@ def gray(shade, alpha=1.0):
 def random_rgba(min_red, max_red, min_green, max_green, min_blue, max_blue, min_alpha=None, max_alpha=None):
     """Creates a random color using the passed in ranges for red, green, blue and alpha.
 
-    If ``min_alp`` and ``max_alp`` are left as ``None``, then alpha is simply set to 1.
+    All the color components here should go from 0.0 to 1.0.
+
+    If ``min_alp`` and ``max_alp`` are left as ``None``, then alpha is simply set to 1.0.
 
     Parameters
     ----------
@@ -359,7 +388,7 @@ def random_rgba(min_red, max_red, min_green, max_green, min_blue, max_blue, min_
     :class:`Color`
     """
 
-    alpha = 1
+    alpha = 1.0
     if min_alpha is not None and max_alpha is not None:
         alpha = randrange(min_alpha, max_alpha)
 
@@ -374,7 +403,9 @@ def random_rgba(min_red, max_red, min_green, max_green, min_blue, max_blue, min_
 def random_gray(min_shade, max_shade, min_alpha=None, max_alpha=None):
     """Creates a random shade of grey.
 
-    If ``min_alp`` and ``max_alp`` are left as ``None``, then alpha is simply set to 1.
+    All the color components here should go from 0.0 to 1.0.
+
+    If ``min_alp`` and ``max_alp`` are left as ``None``, then alpha is simply set to 1.0.
 
     Parameters
     ----------
@@ -389,7 +420,7 @@ def random_gray(min_shade, max_shade, min_alpha=None, max_alpha=None):
     :class:`Color`
     """
 
-    alpha = 1
+    alpha = 1.0
     if min_alpha is not None and max_alpha is not None:
         alpha = randrange(min_alpha, max_alpha)
 
@@ -399,7 +430,10 @@ def random_gray(min_shade, max_shade, min_alpha=None, max_alpha=None):
 def random_hsva(min_hue, max_hue, min_saturation, max_saturation, min_value, max_value, min_alpha=None, max_alpha=None):
     """Creates a random color using the passed in ranges for hue, saturation, value and alpha.
 
-    If ``min_alp`` and ``max_alp`` are left as ``None``, then alpha is simply set to 1.
+    All the color components here should go from 0.0 to 1.0,
+    except for hue, which should go from 0.0 to 360.
+
+    If ``min_alp`` and ``max_alp`` are left as ``None``, then alpha is simply set to 1.0.
 
     Parameters
     ----------
@@ -417,7 +451,7 @@ def random_hsva(min_hue, max_hue, min_saturation, max_saturation, min_value, max
     :class:`Color`
     """
 
-    alpha = 1
+    alpha = 1.0
     if min_alpha is not None and max_alpha is not None:
         alpha = randrange(min_alpha, max_alpha)
 
@@ -432,7 +466,7 @@ def random_hsva(min_hue, max_hue, min_saturation, max_saturation, min_value, max
 def name2color(name):
     """Creates a color based on a name.
 
-    If no color is found, black is returned.
+    If the passed in name is not recognized, black is returned.
 
     The recognized names can be found here: https://en.wikipedia.org/wiki/X11_color_names
 
@@ -449,6 +483,7 @@ def int2color(color):
     Parameters
     ----------
     color : int
+        Normally you'll pass a hex literal (e.g. 0xFFFF00AE)
         The format is AARRGGBB.
 
     Returns
@@ -467,7 +502,10 @@ def str2color(string):
         Can be one of the following:
 
         - Color value in base 16/hex.
-            The format is ``[#/0x][AA]R[R]G[G]B[B]``.
+            The format is ``[#/0x][[A]A]R[R]G[G]B[B]``.
+            If you pass just one digit for each color value, the value is used twice.
+            (e.g. for R G B, the digits are duplicated so it becomes RR GG BB)
+            Alpha is optional, and so are the 0x/# hex identifiers.
 
         - CSS/X11 color name (see https://en.wikipedia.org/wiki/X11_color_names)
 
@@ -524,13 +562,13 @@ def clerp(t, color_a, color_b):
     ----------
     t : float
         A number from 0.0 to 1.0.
-    color_a : Color
-    color_b : Color
+    color_a : :class:`Color`
+    color_b : :class:`Color`
         The colors to interpolate.
 
     Returns
     -------
-    Color
+    :class:`Color`
     """
     return rgba(
         color_a.r + (color_b.r - color_a.r) * t,
@@ -547,12 +585,12 @@ def multi_clerp(t, *colors):
     ----------
     t : float
         A number from 0.0 to 1.0.
-    colors : iterable with Color objects
+    colors : iterable with :class:`Color` objects
         The colors to interpolate.
 
     Returns
     -------
-    Color
+    :class:`Color`
     """
     l = len(colors) - 1
     tt = t * (l)
@@ -566,7 +604,11 @@ def multi_clerp(t, *colors):
 def sinebow(offset, freq0, freq1, freq2, phase0, phase1, phase2, center=128, width=127):
     """Returns a color based on a 'sinebow'.
 
-    See http://krazydad.com/tutorials/makecolors.php
+    See http://krazydad.com/tutorials/makecolors.php for more info.
+
+    Returns
+    -------
+    :class:`Color`
     """
     red = sin(freq0 * offset + phase0) * width + center
     green = sin(freq1 * offset + phase1) * width + center
@@ -575,38 +617,110 @@ def sinebow(offset, freq0, freq1, freq2, phase0, phase1, phase2, center=128, wid
 
 
 def hue_split(base_color, split_num=6):
-    """Returns variations of a color by moving its hue around the "color wheel"."""
+    """Returns variations of a color by moving its hue around the "color wheel".
+
+    Parameters
+    ----------
+    base_color : :class:`Color`
+        The color to split by hue.
+    split_num : int
+        How many times this color should be split around the color wheel.
+
+    Returns
+    -------
+    :class:`Color`
+    """
     dr = 360 / split_num
     h, s, v = base_color.in_hsv()
     return tuple(hsva(h + i * dr, s, v) for i in range(split_num))
 
 
 def complementaries(base_color):
-    """Returns colors that are opposite each other on the color wheel."""
+    """Returns colors that are opposite each other on the color wheel.
+
+    Parameters
+    ----------
+    base_color : :class:`Color`
+        The color to find the complementary of.
+
+    Returns
+    -------
+    :class:`Color`
+    """
     return hue_split(base_color, 2)
 
 
 def split_complementaries(base_color, angle=30):
-    """Returns the base color and two colors adjacent to its complement."""
+    """Returns the base color and two colors adjacent to its complement.
+
+    Parameters
+    ----------
+    base_color : :class:`Color`
+        The color to find the complementaries of.
+
+    Returns
+    -------
+    :class:`Color`
+    """
     h, s, v = base_color.in_hsv()
     return (hsva(h, s, v), hsva(h + 180 - angle, s, v), hsva(h + 180 + angle, s, v))
 
 
 def triads(base_color):
-    """Returns 3 colors that are evenly spaced around the color wheel."""
+    """Returns 3 colors that are evenly spaced around the color wheel.
+
+    Parameters
+    ----------
+    base_color : :class:`Color`
+        The color to base the traids from.
+
+    Returns
+    -------
+    :class:`Color`
+    """
     return hue_split(base_color, 3)
 
 
 def tetrads(base_color):
-    """Returns four colors arranged into two complementary pairs."""
+    """Returns four colors arranged into two complementary pairs.
+
+    Parameters
+    ----------
+    base_color : :class:`Color`
+        The color to base the tetrads from.
+
+    Returns
+    -------
+    :class:`Color`
+    """
     return hue_split(base_color, 4)
 
 
 def pentads(base_color):
-    """Returns 5 colors arranged into a pentagon on the color wheel."""
+    """Returns 5 colors arranged into a pentagon on the color wheel.
+
+    Parameters
+    ----------
+    base_color : :class:`Color`
+        The color to base the pentads from.
+
+    Returns
+    -------
+    :class:`Color`
+    """
     return hue_split(base_color, 5)
 
 
 def hexads(base_color):
-    """Returns 6 colors arranged into a hexagon on the color wheel."""
+    """Returns 6 colors arranged into a hexagon on the color wheel.
+
+    Parameters
+    ----------
+    base_color : :class:`Color`
+        The color to base the hexads from.
+
+    Returns
+    -------
+    :class:`Color`
+    """
     return hue_split(base_color, 6)

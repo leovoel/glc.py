@@ -169,6 +169,8 @@ class RenderList:
         return buf
 
     # shortcuts to add shapes
+    # TODO: document shapes
+    # NOTE: should this documentation be duplicated here (as docstrings on these methods)?
 
     def arc_segment(self, *args, **kwargs):
         return self.add(ArcSegment(*args, **kwargs))

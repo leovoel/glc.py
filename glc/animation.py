@@ -195,6 +195,22 @@ class Animation:
         return self
 
     def set_emoji_path(self, path):
+        """Defines where the library will try to find emoji images.
+
+        The library expects a folder with organization (and filenames)
+        similar to the ones you can get from twemoji, like this:
+        https://github.com/twitter/twemoji/tree/gh-pages/72x72
+
+        Parameters
+        ----------
+        path : str
+            The path to the folder containing the emoji images.
+
+        Returns
+        -------
+        self : :class:`Animation`
+            For method chaining.
+        """
         self.render_list.emoji_path = path
         return self
 
@@ -223,14 +239,17 @@ class Animation:
 
     @property
     def context(self):
+        """Shortcut to access the Cairo context of the render list for this animation."""
         return self.render_list.context
 
     @property
     def w(self):
+        """Shortcut to access the width of the animation."""
         return self.width
 
     @property
     def h(self):
+        """Shortcut to access the height of the animation."""
         return self.height
 
     # context management
