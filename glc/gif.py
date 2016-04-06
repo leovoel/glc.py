@@ -12,7 +12,6 @@ from .config import IMAGEMAGICK_BINARY
 from .animation import Animation
 
 import os
-import subprocess
 import imageio
 
 
@@ -35,7 +34,7 @@ class Gif(Animation):
         not very clean.
 
         Defaults to ``'imageio'``.
-    convert_opts : dict
+    converter_opts : dict
         Dictionary with options for the converters.
     """
 
@@ -43,14 +42,17 @@ class Gif(Animation):
         super().__init__(filename, *args, **kwargs)
         self.color_count = kwargs.get("color_count", 256)
         self.converter = kwargs.get("converter", "imageio")
-        self.convert_opts = kwargs.get("convert_opts", dict())
+        self.converter_opts = kwargs.get("converter_opts", dict())
+
+    def set_converter_opts(self, **kwargs):
+        """Sets the options for the current converter."""
+        self.converter_opts.update(kwargs)
+        return self
 
     def save_with_imagemagick(self, frames, filename):
         """Writes this animation to a GIF file using ImageMagick.
-
         This is currently the only exporter that supports transparent backgrounds.
         This saves every frame to a temporary file.
-
         Parameters
         ----------
         frames : list of numpy arrays
@@ -103,8 +105,7 @@ class Gif(Animation):
     def save_with_imageio(self, frames, filename):
         """Writes this animation to a GIF file using imageio.
 
-        This exporter does not support transparent backgrounds, see
-         for more info.
+        This exporter does not support transparent backgrounds.
 
         Parameters
         ----------
@@ -114,9 +115,8 @@ class Gif(Animation):
             The filename to use when saving the file.
         """
         # TODO: make this more customizable
-        # TODO: add support for more formats (like videos)?
 
-        quant = self.convert_opts.get("quantizer", "wu")
+        quant = self.converter_opts.get("quantizer", "wu")
 
         writer = imageio.get_writer(
             filename,
