@@ -53,6 +53,8 @@ class Animation:
         self.duration = kwargs.pop("duration", 2.0)
         self.fps = kwargs.pop("fps", 30)
 
+        self.transparent = False
+
     def set_size(self, width, height):
         """Changes the size of the drawing surface.
 
@@ -190,7 +192,10 @@ class Animation:
         self : :class:`Animation`
             For method chaining.
         """
-
+        if color.lower() == "transparent":
+            self.transparent = True
+        else:
+            self.transparent = False
         self.set_default_style("bg_color", color)
         return self
 
