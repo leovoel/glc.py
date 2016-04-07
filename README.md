@@ -64,6 +64,8 @@ On Windows, it's usually something like this:
 C:\Program Files\ImageMagick-VERSION_NUMBER\convert.exe
 ```
 
+You'll also need [FFmpeg][ffmpeg] if you want to export using ImageMagick without creating temporary files.
+
 To specify what converter should be used, pass `converter="imagemagick"` or `converter="imageio"`
 in the constructor for a `Gif`, like so:
 
@@ -83,3 +85,4 @@ The default is to use imageio.
 [iio]: https://github.com/imageio/imageio
 [pil]: https://github.com/python-pillow/Pillow
 [npy]: http://www.numpy.org/
+[ffmpeg]: http://ffmpeg.org/
