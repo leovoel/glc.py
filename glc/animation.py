@@ -12,12 +12,15 @@
 
 from .render_list import RenderList
 
+import imageio
+
 
 class Animation:
 
     """Base class for animations.
 
-    Shouldn't be instantiated. You should instead use :class:`GifAnimation`.
+    Shouldn't be instantiated for the most part.
+    You should instead use :class:`Gif`, unless you just want a single frame.
 
     Parameters
     ----------
@@ -52,6 +55,8 @@ class Animation:
 
         self.duration = kwargs.pop("duration", 2.0)
         self.fps = kwargs.pop("fps", 30)
+
+        self.save_single = kwargs.pop("save_single", None)
 
         self.transparent = False
 
@@ -192,10 +197,11 @@ class Animation:
         self : :class:`Animation`
             For method chaining.
         """
-        if color.lower() == "transparent":
-            self.transparent = True
-        else:
-            self.transparent = False
+        if isinstance(color, str):
+            if color.lower() == "transparent":
+                self.transparent = True
+            else:
+                self.transparent = False
         self.set_default_style("bg_color", color)
         return self
 
@@ -242,6 +248,30 @@ class Animation:
 
         return frames
 
+    def render_one(self, t, filename=None):
+        """Renders one frame at time t then export it to a file.
+
+        If filename is ``None``, then the frame is returned as a numpy array. 
+
+        Parameters
+        ----------
+        t : float
+            The time to render at.
+            Should be a value within the range 0.0 to 1.0.
+        filename : str
+            The path + name of the file + extension to save the image in.
+
+        Returns
+        -------
+        ``None``, or a numpy array containing the rendered frame.
+        """
+        frame = self.render_list.render(t)
+
+        if filename is not None:
+            imageio.imwrite(filename, frame)
+            return
+        return frame
+
     @property
     def context(self):
         """Shortcut to access the Cairo context of the render list for this animation."""
@@ -264,4 +294,7 @@ class Animation:
 
     def __exit__(self, exception_type, exception_value, traceback):
         if not exception_type:
+            if self.save_single is not None:
+                self.render_one(self.save_single, self.filename)
+                return
             self.render_and_save(self.filename)
