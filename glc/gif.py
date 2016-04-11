@@ -171,11 +171,10 @@ class Gif(Animation):
             "-delay", "{:.02f}".format(delay),
             "-dispose", "{:d}".format(2 if self.converter_opts.get("dispose", False) or self.transparent else 1),
             "-loop", "{:d}".format(self.converter_opts.get("loop", 0)),
-            *shlex.split(self.converter_opts.get("before_args", "")), # laziness
-            "-",
-            "-coalesce",
-            filename
         ]
+
+        im_command.extend(shlex.split(self.converter_opts.get("before_args", "")))
+        im_command.extend(["-", "-coalesce", filename])
 
         popen_kwargs["stdin"] = ffmpeg_process.stdout
         popen_kwargs["stdout"] = DEVNULL
