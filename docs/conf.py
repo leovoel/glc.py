@@ -46,7 +46,7 @@ autodoc_member_order = 'bysource'
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3.5/', 'https://docs.python.org/3.5/objects.inv'),
-    'cairo': ('http://cairographics.org/documentation/pycairo/3/', None)
+    'cairo': ('http://cairographics.org/documentation/pycairo/3/', 'http://cairographics.org/documentation/pycairo/3/objects.inv')
 }
 
 # Add any paths that contain templates here, relative to this directory.
