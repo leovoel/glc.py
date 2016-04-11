@@ -13,8 +13,17 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from unittest.mock import MagicMock
 import sys
 import os
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+            return Mock()
+
+MOCK_MODULES = ['cairo']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
