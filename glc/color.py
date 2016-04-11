@@ -313,16 +313,10 @@ def rgba(red, green, blue, alpha=1.0):
 
     All the color components here should go from 0.0 to 1.0.
 
-    Parameters
-    ----------
-    red : float
-    green : float
-    blue : float
-    alpha : float
-
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return Color(red, green, blue, alpha)
 
@@ -333,16 +327,10 @@ def hsva(hue, saturation, value, alpha=1.0):
     All the color components here should go from 0.0 to 1.0,
     except for hue, which should go from 0.0 to 360.
 
-    Parameters
-    ----------
-    h : float
-    s : float
-    v : float
-    a : float
-
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     red, green, blue = hsv2rgb(hue, saturation, value)
     return Color(red, green, blue, alpha)
@@ -353,14 +341,10 @@ def gray(shade, alpha=1.0):
 
     All the color components here should go from 0.0 to 1.0.
 
-    Parameters
-    ----------
-    shade : float
-    alpha : float
-
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return Color(shade, shade, shade, alpha)
 
@@ -372,20 +356,10 @@ def random_rgba(min_red, max_red, min_green, max_green, min_blue, max_blue, min_
 
     If ``min_alp`` and ``max_alp`` are left as ``None``, then alpha is simply set to 1.0.
 
-    Parameters
-    ----------
-    min_red : float
-    max_red : float
-    min_green : float
-    max_green : float
-    min_blue : float
-    max_blue : float
-    min_alpha : float
-    max_alpha : float
-
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
 
     alpha = 1.0
@@ -407,17 +381,10 @@ def random_gray(min_shade, max_shade, min_alpha=None, max_alpha=None):
 
     If ``min_alp`` and ``max_alp`` are left as ``None``, then alpha is simply set to 1.0.
 
-    Parameters
-    ----------
-    min_shade : float
-    max_shade : float
-    min_alpha : float
-    max_alpha : float
-        The ranges to generate random values from.
-
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
 
     alpha = 1.0
@@ -435,20 +402,10 @@ def random_hsva(min_hue, max_hue, min_saturation, max_saturation, min_value, max
 
     If ``min_alp`` and ``max_alp`` are left as ``None``, then alpha is simply set to 1.0.
 
-    Parameters
-    ----------
-    min_hue : float
-    max_hue : float
-    min_saturation : float
-    max_saturation : float
-    min_value : float
-    max_value : float
-    min_alpha : float
-    max_alpha : float
-
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
 
     alpha = 1.0
@@ -472,7 +429,8 @@ def name2color(name):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return rgba(*COLOR_NAMES.get(name.lower(), (0.0, 0.0, 0.0)))
 
@@ -483,12 +441,13 @@ def int2color(color):
     Parameters
     ----------
     color : int
-        Normally you'll pass a hex literal (e.g. 0xFFFF00AE)
-        The format is AARRGGBB.
+        Usually you'll want to pass a hex literal (e.g. ``0xFFFF00AE``).
+        The expected format is AARRGGBB.
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return Color().set_int(color)
 
@@ -511,7 +470,8 @@ def str2color(string):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
 
     # strip hex notation, if it's there
@@ -563,12 +523,14 @@ def clerp(t, color_a, color_b):
     t : float
         A number from 0.0 to 1.0.
     color_a : :class:`Color`
+        The color to interpolate from.
     color_b : :class:`Color`
-        The colors to interpolate.
+        The color to interpolate to.
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return rgba(
         color_a.r + (color_b.r - color_a.r) * t,
@@ -590,7 +552,8 @@ def multi_clerp(t, *colors):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     l = len(colors) - 1
     tt = t * (l)
@@ -608,7 +571,8 @@ def sinebow(offset, freq0, freq1, freq2, phase0, phase1, phase2, center=128, wid
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     red = sin(freq0 * offset + phase0) * width + center
     green = sin(freq1 * offset + phase1) * width + center
@@ -628,7 +592,8 @@ def hue_split(base_color, split_num=6):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     dr = 360 / split_num
     h, s, v = base_color.in_hsv()
@@ -645,7 +610,8 @@ def complementaries(base_color):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return hue_split(base_color, 2)
 
@@ -660,7 +626,8 @@ def split_complementaries(base_color, angle=30):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     h, s, v = base_color.in_hsv()
     return (hsva(h, s, v), hsva(h + 180 - angle, s, v), hsva(h + 180 + angle, s, v))
@@ -676,7 +643,8 @@ def triads(base_color):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return hue_split(base_color, 3)
 
@@ -691,7 +659,8 @@ def tetrads(base_color):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return hue_split(base_color, 4)
 
@@ -706,7 +675,8 @@ def pentads(base_color):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return hue_split(base_color, 5)
 
@@ -721,6 +691,7 @@ def hexads(base_color):
 
     Returns
     -------
-    :class:`Color`
+    color : :class:`Color`
+        A Color object.
     """
     return hue_split(base_color, 6)

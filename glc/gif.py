@@ -21,6 +21,8 @@ class Gif(Animation):
 
     """Animation rendered to a gif file.
 
+    This is a subclass of :class:`Animation`.
+
     Parameters
     ----------
     color_count : int

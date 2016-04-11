@@ -10,6 +10,7 @@
 
 """
 
+from bisect import bisect_left
 from math import sqrt, sin, cos, tan, acos, pi, floor
 from random import random
 from PIL import Image
@@ -23,12 +24,24 @@ RADTODEG = 180 / pi
 
 
 def deg(rad):
-    """Converts the passed in value in radians to degrees."""
+    """Converts the specified angle in radians to degrees.
+
+    Returns
+    -------
+    float
+        The converted angle.
+    """
     return rad * RADTODEG
 
 
 def rad(deg):
-    """Converts the passed in value in degrees to radians."""
+    """Converts the specified angle in degrees to radians.
+
+    Returns
+    -------
+    float
+        The converted angle.
+    """
     return deg * DEGTORAD
 
 
@@ -38,35 +51,89 @@ def clamp(value, start, end):
     If ``value`` is less than ``start``, ``start`` is returned.
     If ``value`` is greater than ``end``, ``end`` is returned.
     Otherwise, ``value`` is returned.
+
+    Returns
+    -------
+    float
+        The clamped value.
     """
     return start if value < start else end if value > end else value
 
 
 def norm(value, start, end):
+    """Normalizes a value in the range specified by ``start`` and ``end`` to the range 0-1.
+
+    Returns
+    -------
+    float
+        The normalized value.
+    """
     return (value - start) / (end - start)
 
 
 def lerp(t, start, end):
+    """Linearly interpolates from ``start`` to ``end`` by ``t``.
+
+    Returns
+    -------
+    float
+        The interpolated value.
+    """
     return (end - start) * t + start
 
 
 def remap(value, src_min, src_max, dst_min, dst_max):
+    """Maps a value from a source range to a target range.
+
+    Returns
+    -------
+    float
+        The remapped value.
+    """
     return lerp(norm(value, src_min, src_max), dst_min, dst_max)
 
 
 def randrange(start, end):
+    """Returns a random float in the range defined by ``start`` and ``end``.
+
+    Returns
+    -------
+    float
+        The random value.
+    """
     return start + random() * (end - start)
 
 
 def bezier(v, x0, x1, x2, x3):
+    """Returns a point for a given ``v`` value on the specified cubic bézier path.
+
+    Returns
+    -------
+    float
+        The point on the 1D path.
+    """
     return (1 - v) * (1 - v) * (1 - v) * x0 + 3 * (1 - v) * (1 - v) * v * x1 + 3 * (1 - v) * v * v * x2 + v * v * v * x3
 
 
 def quadratic(v, x0, x1, x2):
+    """Returns a point for a given ``v`` value on the specified quadratic bézier path.
+
+    Returns
+    -------
+    float
+        The point on the 1D path.
+    """
     return (1 - v) * (1 - v) * x0 + 2 * (1 - v) * v * x1 + v * v * x2
 
 
 def catmull_rom(v, x0, x1, x2, x3):
+    """Returns a point for a given ``v`` value on the specified Catmull-Rom spline.
+
+    Returns
+    -------
+    float
+        The point on the 1D path.
+    """
     return (0.5 * (2 * x1 + (x2 - x0) * v + (2 * x0 - 5 * x1 + 4 * x2 - x3) * v * v + (3 * x1 - x0 - 3 * x2 + x3) * v * v * v))
 
 
@@ -77,15 +144,47 @@ def spline(v, x0, x1, x2, x3, tightness=1):
 
 
 def quantize(value, tick):
+    """Rounds the given ``value`` to the nearest multiple of ``tick``.
+
+    Returns
+    -------
+    float
+        The quantized value.
+    """
     return tick * floor(value / tick)
 
 
 def distribute(divisions, start=0, end=1, inclusive=False):
+    """Returns a range of values between ``start`` and ``end``, divided in the wanted amount of pieces.
+
+    Parameters
+    ----------
+    divisions : int
+        How many pieces should the range be broken in.
+    start : float
+        The value to start at.
+    end : float
+        The value to end at.
+    inclusive : bool
+        Whether the end should be included in the distribution.
+
+    Returns
+    -------
+    Generator of floats
+        The distribution of values.
+    """
     d = end - start
     return (d * (i / divisions) + start for i in range(0, divisions + int(inclusive)))
 
 
 def hermite(v, x0, x1, x2, x3):
+    """Returns a value ``v`` interpolated using hermite interpolation.
+
+    Returns
+    -------
+    float
+        The interpolated value.
+    """
     if v == 0:
         return x0
     elif v == 1:
@@ -95,19 +194,70 @@ def hermite(v, x0, x1, x2, x3):
 
 
 def cosine(value, start, end):
+    """Interpolates a ``value`` from ``start`` to ``end`` using cosine interpolation.
+
+    Returns
+    -------
+    float
+        The interpolated value.
+    """
     value2 = (1 - cos(value * pi)) / 2
     return start * (1 - value2) + end * value2
 
 
 def smoothstep(value, start, end):
+    """Interpolate a ``value`` from ``start`` to ``end`` using the smoothstep function.
+
+    See https://en.wikipedia.org/wiki/Smoothstep
+
+    Returns
+    -------
+    float
+        The interpolated value.
+    """
     x = clamp(norm(value, start, end), 0, 1)
     return x * x * (3 - 2 * x)
 
 
 def smootherstep(value, start, end):
+    """Interpolate a ``value`` from ``start`` to ``end`` using the smootherstep function.
+
+    See https://en.wikipedia.org/wiki/Smoothstep#Variations
+
+    Returns
+    -------
+    float
+        The interpolated value.
+    """
     x = clamp(norm(value, start, end), 0, 1)
     return x * x * x * (x * (x * 6 - 15) + 10)
 
+
+def pick_closest(n, l):
+    """Pick a value from an iterable ``l`` at index ``n``, which is "snapped back" to a valid index.
+
+    Parameters
+    ----------
+    n : int
+        Index to round.
+    l : iterable
+        Iterable to pick a value from.
+
+    Returns
+    -------
+    Iterable element
+        Whatever was at the picked index in the iterable.
+    """
+    position = bisect_left(l, n)
+    if position == 0:
+        return l[0]
+    if position == len(l):
+        return l[-1]
+    before = l[position - 1]
+    after = l[position]
+    if after - n < n - before:
+        return after
+    return before
 
 # cairo utils
 
@@ -128,6 +278,7 @@ def bgra_to_rgba(surface):
     Returns
     -------
     img_bytes : bytes object
+        The image in bytes.
     """
     size = surface.get_width(), surface.get_height()
     img = Image.frombuffer('RGBA', size, bytes(surface.get_data()), 'raw', 'BGRA', 0, 1)
@@ -135,6 +286,30 @@ def bgra_to_rgba(surface):
 
 
 def draw_image(ctx, img, x, y, w=None, h=None):
+    """Draws an image on a given Cairo context.
+
+    If given explicit width and height, the image is resized
+    to fit those dimensions, without any regard for maintaining
+    aspect ratio or anything like that.
+
+    If you want that kind of behavior, you'll have
+    to calculate the desired width and height a priori.
+
+    Parameters
+    ----------
+    ctx : :class:`cairo.Context`
+        The context to draw an image on.
+    img : :class:`cairo.Surface`
+        The image (as a Cairo surface) to draw.
+    x : float
+        Horizontal position to draw the image on.
+    y : float
+        Vertical position to draw the image on.
+    w : float
+        Target width for the image.
+    h : float
+        Target height for the image.
+    """
     sourcew, sourceh = img.get_width(), img.get_height()
 
     if w is None:
@@ -331,6 +506,8 @@ def arc_to(context, x1, y1, x2, y2, r):
     context.arc(px, py, r, sa, ea)
 
 # string utils
+
+# TODO: expand into more robust emoji check
 
 _EMOJI_RANGE_RE = re.compile('[\U00010000-\U0010ffff]')
 

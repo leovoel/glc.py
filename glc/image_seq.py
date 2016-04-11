@@ -15,7 +15,10 @@ import imageio
 
 class ImageSequence(Animation):
 
-    """Animation rendered to a sequence of image files."""
+    """Animation rendered to a sequence of image files.
+
+    This is a subclass of :class:`Animation`.
+    """
 
     def render_and_save(self, filename):
         """Renders the animation and writes it to a sequence of image files.

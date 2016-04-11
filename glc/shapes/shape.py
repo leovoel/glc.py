@@ -23,6 +23,25 @@ class Shape:
 
     The subclasses should mostly only have to define a ``draw`` method,
     which takes in the context, and t/current time offset.
+
+    The properties listed here are common to all shapes.
+
+    Attributes
+    ----------
+    speed_mult : float
+    phase : float
+    translation_x : float
+    translation_y : float
+    line_width : float
+    line_cap : int
+    line_join : int
+    miter_limit : float
+    shake : float
+    line_dash : iterable of floats
+    fill : :class:`Color`
+    stroke : :class:`Color`
+    ease : callable or string
+    loop : bool
     """
 
     def __init__(self, *args, **kwargs):

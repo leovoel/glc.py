@@ -14,6 +14,32 @@ from ..utils import rad
 
 class ArcSegment(Shape):
 
+    """This draws an arc around a (x, y) point with a radius and start/end angles,
+    but only draws a portion of that arc.
+
+    The drawn segment will animate from the start angle to the end angle
+    during the animation (and back to the start angle if the
+    loop attribute on the animation is ``True``).
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.arc_segment(x=100, y=100, radius=50, start=0, end=360, arc=20, rotation=0)
+        # or
+        render_list.arcseg(x=100, y=100, radius=50, start=0, end=360, arc=20, rotation=0)
+
+    Attributes
+    ----------
+    x : float
+    y : float
+    radius : float
+    start : float
+    end : float
+    arc : float
+    rotation : float
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)

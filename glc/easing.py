@@ -13,6 +13,10 @@
 from math import pi, sin, cos, sqrt
 
 
+# all easing functions here are ease in-out
+# TODO: more control
+
+
 def linear(t):
     return t
 

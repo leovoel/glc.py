@@ -233,7 +233,13 @@ class RenderList:
 
         for img in imgs:
             # special case for strings with one emoji
+
             # TODO: make this an option?
+
+            # TODO: this fails for some cases
+            # so the right thing to do here would be to abstract it out
+            # into a special "get the right image" module.
+            # refer to twemoji: https://github.com/twitter/twemoji
             if len(img) == 1 and is_emoji(img) and self.emoji_path:
                 hex_val = img.encode("unicode-escape").decode("ascii").lstrip("\\U0")
 
