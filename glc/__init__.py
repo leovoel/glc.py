@@ -22,3 +22,4 @@ import cairo
 from .animation import Animation
 from .render_list import RenderList
 from .gif import Gif
+from .image_seq import ImageSequence
