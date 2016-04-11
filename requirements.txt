@@ -1,2 +1,4 @@
 imageio
 numpy
+https://github.com/ldo/pycairo/
+Pillow
