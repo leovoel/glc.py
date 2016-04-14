@@ -34,7 +34,7 @@ See "Requirements" on necessary info for the dependencies of this lib.
 ```py
 import glc
 
-with glc.animation.Gif("a_circle.gif", w=500, h=500) as a:
+with glc.Gif("a_circle.gif", w=500, h=500) as a:
     l, w, h = a.render_list, a.w, a.h
     l.circle(x=w * 0.5, y=h * 0.5, radius=[100, 200])
 ```
