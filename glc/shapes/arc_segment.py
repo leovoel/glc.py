@@ -14,8 +14,7 @@ from ..utils import rad
 
 class ArcSegment(Shape):
 
-    """This draws an arc around a (x, y) point with a radius and start/end angles,
-    but only draws a portion of that arc.
+    """Draws a portion of an arc around a (x, y) point with a radius and start/end angles.
 
     The drawn segment will animate from the start angle to the end angle
     during the animation (and back to the start angle if the

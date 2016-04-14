@@ -24,24 +24,52 @@ class Shape:
     The subclasses should mostly only have to define a ``draw`` method,
     which takes in the context, and t/current time offset.
 
-    The properties listed here are common to all shapes.
+    A lot of the properties passed in can be lists/tuples with two or
+    more values, which will animate from one to the other. Depending
+    on the amount of values (and the property itself) there will
+    be no interpolation, just immediate change from one value to another.
+
+    They can also be callables, which should take in a time ``t`` and return
+    a single value of the type it expects; so a :class:`Color` for fills, etc.
+
+    The properties listed here are common to all shapes, but
+    some do not work, as it wouldn't make much sense.
 
     Attributes
     ----------
     speed_mult : float
+        Multiplier for the time ``t`` applied to this shape.
     phase : float
+        The "local offset" for the time ``t`` applied to this shape.
     translation_x : float
+        The horizontal offset for the position of the shape.
     translation_y : float
+        The vertical offset for the position of the shape.
     line_width : float
+        The width of the outlines for the shape.
     line_cap : int
     line_join : int
+    line_dash : iterable of floats
     miter_limit : float
     shake : float
-    line_dash : iterable of floats
+        How much the shape should shake.
     fill : :class:`Color`
+        Color the fill of this shape. Can also be a value like ``None`` or ``False``
+        to indicate that no filling should be done.
     stroke : :class:`Color`
+        Color the outline of this shape. Can also be a value like ``None`` or ``False``
+        to indicate that no stroking should be done.
     ease : callable or string
+        Either a string, which denotes which easing function to pick from the defaults,
+        or a callable, which should take in a time ``t`` and return a single value.
+        By default it inherits this attribute from the :class:`Animation` that contains it.
     loop : bool
+        Whether this shape should bounce back to its initial properties.
+        By default it inherits this attribute from the :class:`Animation` that contains it.
+    parent : :class:`Shape`
+        Specifies the parent for this shape. The position of it becomes relative to its
+        parent, as is the rotation.
+        Usually is ``None``.
     """
 
     def __init__(self, *args, **kwargs):
@@ -51,18 +79,72 @@ class Shape:
         self.shapes = []
 
     def add(self, item):
+        """Adds a child shape to this shape's list of children.
+
+        Shouldn't be called normally, as this is called automatically
+        when you set a shape as a parent of another, for example:
+
+        .. code-block:: python
+
+            circle_a = render_list.circle(x=100, y=100, radius=50)
+            render_list.circle(x=100, y=0, radius=50, parent=circle_a)
+
+        Parameters
+        ----------
+        item : :class:`Shape`
+            The shape to add as a child of this one.
+
+        Returns
+        -------
+        item : :class:`Shape`
+            The added child.
+        """
         self.shapes.append(item)
         return item
 
     def set_prop(self, **kwargs):
+        """Sets properties for this shape.
+
+        Returns
+        -------
+        self : :class:`Shape`
+            For method chaining.
+        """
         self.props.update(kwargs)
         return self
 
     def set_ease(self, ease="sine"):
+        """Sets the easing function for this shape.
+
+        Parameters
+        ----------
+        ease : callable or str
+            Either a string, which denotes which easing function to pick from the defaults,
+            or a callable, which should take in a time ``t`` and return a single value.
+            Defaults to ``"sine"``.
+
+        Returns
+        -------
+        self : :class:`Shape`
+            For method chaining.
+        """
         self.ease = ease
         return self
 
     def set_loop(self, loop=True):
+        """Sets whether this shape should loop or not.
+
+        Parameters
+        ----------
+        loop : bool
+            Whether this shape should bounce back to its initial properties.
+            Defaults to ``True``.
+
+        Returns
+        -------
+        self : :class:`Shape`
+            For method chaining.
+        """
         self.loop = loop
         return self
 

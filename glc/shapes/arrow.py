@@ -14,6 +14,32 @@ from ..utils import rad
 
 class Arrow(Shape):
 
+    """Draws an arrow shape.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.arrow(x=100, y=100, w=100, h=100, point_percent=0.5, shaft_percent=0.5, rotation=0.5)
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the center of the arrow.
+    y : float
+        Vertical position of the center of the arrow.
+    w : float
+        Width of the arrow.
+    h : float
+        Height of the arrow.
+    point_percent : float
+        How much the point of the arrow will take up from the width.
+    shaft_percent : float
+        How much the shaft of the arrow will take up from the width.
+    rotation : float
+        Angle of the arrow.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)
