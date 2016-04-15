@@ -251,7 +251,7 @@ class Animation:
     def render_one(self, t, filename=None):
         """Renders one frame at time t then export it to a file.
 
-        If filename is ``None``, then the frame is returned as a numpy array.
+        If filename is ``"<bytes>"``, then the frame is returned as a numpy array.
 
         Parameters
         ----------
@@ -265,9 +265,12 @@ class Animation:
         -------
         The rendered frame as a numpy array.
         """
+        if filename is None:
+            filename = self.filename
+
         frame = self.render_list.render(t)
 
-        if filename is not None:
+        if filename is not "<bytes>":
             imageio.imwrite(filename, frame)
             return
         return frame
@@ -295,6 +298,6 @@ class Animation:
     def __exit__(self, exception_type, exception_value, traceback):
         if not exception_type:
             if self.save_single is not None:
-                self.render_one(self.save_single, self.filename)
+                self.render_one(self.save_single)
                 return
-            self.render_and_save(self.filename)
+            self.render_and_save()

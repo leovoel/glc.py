@@ -216,7 +216,7 @@ class Gif(Animation):
 
         writer.close()
 
-    def render_and_save(self, filename):
+    def render_and_save(self, filename=None):
         """Renders the animation and writes it to a GIF file.
 
         This uses the currently set exporter based on the attribute ``converter``.
@@ -228,6 +228,9 @@ class Gif(Animation):
         filename : str
             The filename to use when saving the file.
         """
+        if filename is None:
+            filename = self.filename
+
         frames = self.render_all()
         func = getattr(self, "save_with_{}".format(self.converter), None)
 
