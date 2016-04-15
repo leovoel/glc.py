@@ -251,7 +251,7 @@ class Animation:
     def render_one(self, t, filename=None):
         """Renders one frame at time t then export it to a file.
 
-        If filename is ``None``, then the frame is returned as a numpy array. 
+        If filename is ``None``, then the frame is returned as a numpy array.
 
         Parameters
         ----------
@@ -263,7 +263,7 @@ class Animation:
 
         Returns
         -------
-        ``None``, or a numpy array containing the rendered frame.
+        The rendered frame as a numpy array.
         """
         frame = self.render_list.render(t)
 

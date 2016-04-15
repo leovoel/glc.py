@@ -259,6 +259,7 @@ def pick_closest(n, l):
         return after
     return before
 
+
 # cairo utils
 
 def bgra_to_rgba(surface):
@@ -510,6 +511,7 @@ def arc_to(context, x1, y1, x2, y2, r):
 # TODO: expand into more robust emoji check
 
 _EMOJI_RANGE_RE = re.compile('[\U00010000-\U0010ffff]')
+
 
 def is_emoji(s):
     return _EMOJI_RANGE_RE.match(s)

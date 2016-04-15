@@ -104,7 +104,7 @@ class Gif(Animation):
             os.remove(f)
 
     def save_with_imagemagick(self, frames, filename):
-        """Writes this animation to a GIF file using ImageMagick and ffmpeg.
+        """Writes this animation to a GIF file using ImageMagick and FFmpeg.
 
         This exporter supports transparent backgrounds.
         This uses piping to avoid temporary files.

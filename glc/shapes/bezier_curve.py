@@ -13,6 +13,39 @@ from .shape import Shape
 
 class BezierCurve(Shape):
 
+    """Draws a standard bezier curve using four points.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.bezier_curve(x0=50, y0=10, x1=200, y1=100, x2=0, y2=100, x3=150, y3=10, show_points=False)
+        # or
+        render_list.bezier(x0=50, y0=10, x1=200, y1=100, x2=0, y2=100, x3=150, y3=10, show_points=False)
+
+    Attributes
+    ----------
+    x0 : float
+        Horizontal position of the first point.
+    y0 : float
+        Vertical position of the first point.
+    x1 : float
+        Horizontal position of the second point.
+    y1 : float
+        Vertical position of the second point.
+    x2 : float
+        Horizontal position of the third point.
+    y2 : float
+        Vertical position of the third point.
+    x3 : float
+        Horizontal position of the fourth point.
+    y3 : float
+        Vertical position of the fourth point.
+    show_points : bool
+        Whether to show the points used to draw the curve or not.
+        Defaults to ``False``.
+    """
+
     def draw(self, context, t):
         x0 = self.get_number("x0", t, 50)
         y0 = self.get_number("y0", t, 10)

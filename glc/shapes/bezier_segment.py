@@ -14,6 +14,45 @@ from ..utils import bezier
 
 class BezierSegment(Shape):
 
+    """Draws a portion of a standard bezier curve using four points.
+
+    The drawn segment will animate from the start of the curve to the
+    end of it during the animation (and back to the start if the
+    loop attribute on the animation is ``True``).
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.bezier_segment(x0=50, y0=10, x1=200, y1=100, x2=0, y2=100, x3=150, y3=10, percent=0.5, show_points=False)
+        # or
+        render_list.bezierseg(x0=50, y0=10, x1=200, y1=100, x2=0, y2=100, x3=150, y3=10, percent=0.5, show_points=False)
+
+    Attributes
+    ----------
+    x0 : float
+        Horizontal position of the first point.
+    y0 : float
+        Vertical position of the first point.
+    x1 : float
+        Horizontal position of the second point.
+    y1 : float
+        Vertical position of the second point.
+    x2 : float
+        Horizontal position of the third point.
+    y2 : float
+        Vertical position of the third point.
+    x3 : float
+        Horizontal position of the fourth point.
+    y3 : float
+        Vertical position of the fourth point.
+    percent : float
+        How much of the bezier curve should be drawn.
+    show_points : bool
+        Whether to show the points used to draw the curve or not.
+        Defaults to ``False``.
+    """
+
     def draw(self, context, t):
         x0 = self.get_number("x0", t, 50)
         y0 = self.get_number("y0", t, 10)

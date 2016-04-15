@@ -16,7 +16,7 @@ Container
 Arc Segment
 ===========
 
-TODO: add example here
+.. image:: _static/arc_segment_example.gif
 
 .. autoclass:: glc.shapes.ArcSegment
     :members:
@@ -24,7 +24,7 @@ TODO: add example here
 Arrow
 =====
 
-TODO: add example here
+.. image:: _static/arrow_example.gif
 
 .. autoclass:: glc.shapes.Arrow
     :members:
@@ -32,9 +32,17 @@ TODO: add example here
 Bézier Curve
 ============
 
-TODO: add example here
+.. image:: _static/bezier_curve_example.gif
 
 .. autoclass:: glc.shapes.BezierCurve
+    :members:
+
+Bézier Segment
+==============
+
+TODO: add example here
+
+.. autoclass:: glc.shapes.BezierSegment
     :members:
 
 Circle

@@ -37,7 +37,7 @@ class Arrow(Shape):
     shaft_percent : float
         How much the shaft of the arrow will take up from the width.
     rotation : float
-        Angle of the arrow.
+        Angle of the arrow, in degrees.
     """
 
     def draw(self, context, t):

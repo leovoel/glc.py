@@ -31,12 +31,19 @@ class ArcSegment(Shape):
     Attributes
     ----------
     x : float
+        Horizontal position of the arc.
     y : float
+        Vertical position of the arc.
     radius : float
+        Radius of the arc.
     start : float
+        Start angle of the arc, in degrees.
     end : float
+        End angle of the arc, in degrees.
     arc : float
+        Angle of the arc to draw, in degrees.
     rotation : float
+        Rotation of the arc, in degrees.
     """
 
     def draw(self, context, t):

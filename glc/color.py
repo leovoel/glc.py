@@ -457,16 +457,24 @@ def str2color(string):
 
     Parameters
     ----------
-    color : string
+    color : str
         Can be one of the following:
 
-        - Color value in base 16/hex.
-        The format is ``[#/0x][[A]A]R[R]G[G]B[B]``.
-        If you pass just one digit for each color value, the value is used twice.
-        (e.g. for R G B, the digits are duplicated so it becomes RR GG BB)
-        Alpha is optional, and so are the 0x/# hex identifiers.
+            - Color value in base 16/hex.
 
-        - CSS/X11 color name (see https://en.wikipedia.org/wiki/X11_color_names)
+                The format is ``[#/0x][[A]A]R[R]G[G]B[B]``.
+
+
+                If you pass just one digit for each color value, the value is used twice
+                (e.g. for R G B, the digits are duplicated so it becomes RR GG BB).
+
+
+                Alpha is optional, and so are the 0x/# hex identifiers.
+
+            - CSS/X11 color name
+
+                (see https://en.wikipedia.org/wiki/X11_color_names)
+
 
     Returns
     -------
