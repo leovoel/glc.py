@@ -39,6 +39,16 @@ class RenderList:
         The overall easing function of the animation. Defaults to ``'sine'``.
     loop : bool
         Whether the animation should loop. Defaults to ``True``.
+    emoji_path : string
+        Where the emoji pngs are located. Defaults to ``None``.
+    before_render : callable
+        A function that takes in this render list, a Cairo surface, context, and a time ``t``.
+        It's called before all shapes are rendered.
+        Defaults to ``None``.
+    after_render : callable
+        A function that takes in this render list, a Cairo surface, context, and a time ``t``.
+        It's called after all shapes are rendered.
+        Defaults to ``None``.
 
     Attributes
     ----------
@@ -65,6 +75,9 @@ class RenderList:
         self.context = cairo.Context(self.surface)
 
         self.emoji_path = kwargs.pop("emoji_path", None)
+
+        self.before_render = kwargs.pop("before_render", None)
+        self.after_render = kwargs.pop("after_render", None)
 
         self.shapes = []
         self._cached_images = {}
@@ -155,8 +168,18 @@ class RenderList:
 
         self.context.set_operator(cairo.OPERATOR_OVER)
 
+        if self.before_render is not None:
+            self.context.save()
+            self.before_render(self, self.surface, self.context, t)
+            self.context.restore()
+
         for shape in self.shapes:
             shape.render(self.context, t)
+
+        if self.after_render is not None:
+            self.context.save()
+            self.after_render(self, self.surface, self.context, t)
+            self.context.restore()
 
         # convert the stupid cairo surface from
         # bgra to rgba using pillow first, then
