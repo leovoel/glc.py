@@ -15,4 +15,4 @@ def draw(l, surf, ctx, t):
     ctx.fill()
 
 
-Gif(after_render=draw).render_and_save(get_filename(__file__))
+Gif(get_filename(__file__), after_render=draw).render_and_save()
