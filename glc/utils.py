@@ -11,7 +11,7 @@
 """
 
 from bisect import bisect_left
-from math import sqrt, sin, cos, tan, acos, pi, floor
+from math import sqrt, sin, cos, tan, acos, pi, floor, degrees, radians
 from random import random
 from PIL import Image
 
@@ -19,30 +19,8 @@ import re
 
 # math utils
 
-DEGTORAD = pi / 180
-RADTODEG = 180 / pi
-
-
-def deg(rad):
-    """Converts the specified angle in radians to degrees.
-
-    Returns
-    -------
-    float
-        The converted angle.
-    """
-    return rad * RADTODEG
-
-
-def rad(deg):
-    """Converts the specified angle in degrees to radians.
-
-    Returns
-    -------
-    float
-        The converted angle.
-    """
-    return deg * DEGTORAD
+deg = degrees
+rad = radians
 
 
 def clamp(value, start, end):
