@@ -132,13 +132,22 @@ class Text(Shape):
                 else:
                     context.text_path(char)
 
-                    if self.props.get("fill", True):
-                        context.set_source_rgba(*self.get_color("fill", t, self.default_styles["fill"]))
-                        context.fill_preserve()
+                    if self.props.get("stroke_before", False):
+                        if self.props.get("stroke", False):
+                            context.set_source_rgba(*self.get_color("stroke", t, self.default_styles["stroke"]))
+                            context.stroke_preserve()
 
-                    if self.props.get("stroke", False):
-                        context.set_source_rgba(*self.get_color("stroke", t, self.default_styles["stroke"]))
-                        context.stroke_preserve()
+                        if self.props.get("fill", True):
+                            context.set_source_rgba(*self.get_color("fill", t, self.default_styles["fill"]))
+                            context.fill_preserve()
+                    else:
+                        if self.props.get("fill", True):
+                            context.set_source_rgba(*self.get_color("fill", t, self.default_styles["fill"]))
+                            context.fill_preserve()
+
+                        if self.props.get("stroke", False):
+                            context.set_source_rgba(*self.get_color("stroke", t, self.default_styles["stroke"]))
+                            context.stroke_preserve()
 
                 context.new_path()
                 context.restore()

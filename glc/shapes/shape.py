@@ -204,15 +204,25 @@ class Shape:
     def draw_fill_and_stroke(self, context, t, do_fill, do_stroke):
         context.save()
 
-        if self.props.get("fill", do_fill):
-            context.set_source_rgba(*self.get_color("fill", t, self.default_styles["fill"]))
-            context.fill_preserve()
+        if self.props.get("stroke_before", False):
+            if self.props.get("stroke", do_stroke):
+                context.set_source_rgba(*self.get_color("stroke", t, self.default_styles["stroke"]))
+                context.stroke_preserve()
+
+            if self.props.get("fill", do_fill):
+                context.set_source_rgba(*self.get_color("fill", t, self.default_styles["fill"]))
+                context.fill_preserve()
+        else:
+            if self.props.get("fill", do_fill):
+                context.set_source_rgba(*self.get_color("fill", t, self.default_styles["fill"]))
+                context.fill_preserve()
+
+            if self.props.get("stroke", do_stroke):
+                context.set_source_rgba(*self.get_color("stroke", t, self.default_styles["stroke"]))
+                context.stroke_preserve()
 
         context.restore()
 
-        if self.props.get("stroke", do_stroke):
-            context.set_source_rgba(*self.get_color("stroke", t, self.default_styles["stroke"]))
-            context.stroke_preserve()
 
     def end_draw(self, context, t):
         context.close_path()
