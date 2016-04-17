@@ -18,6 +18,10 @@ Arc Segment
 
 .. image:: _static/arc_segment_example.gif
 
+.. literalinclude:: _static/arc_segment_example.py
+    :language: python
+
+
 .. autoclass:: glc.shapes.ArcSegment
     :members:
 
@@ -26,6 +30,9 @@ Arrow
 
 .. image:: _static/arrow_example.gif
 
+.. literalinclude:: _static/arrow_example.py
+    :language: python
+
 .. autoclass:: glc.shapes.Arrow
     :members:
 
@@ -33,6 +40,9 @@ Bézier Curve
 ============
 
 .. image:: _static/bezier_curve_example.gif
+
+.. literalinclude:: _static/bezier_curve_example.py
+    :language: python
 
 .. autoclass:: glc.shapes.BezierCurve
     :members:
