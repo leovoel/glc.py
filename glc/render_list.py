@@ -253,6 +253,7 @@ class RenderList:
             imgs = [imgs]
 
         surfaces = []
+        durations = []
 
         for img in imgs:
             # special case for strings with one emoji
@@ -283,15 +284,32 @@ class RenderList:
 
                 self._cached_images[img] = []
 
-                for im in reader:
-                    writer = imageio.imwrite('<bytes>', im, 'png')
+                for index, im in enumerate(reader):
+
+                    # get frame durations here (for gifs)
+                    # U N D O C U M E N T E D  B O Y Z
+
+                    try:
+                        duration = reader._get_meta_data(index)
+                        durations.append(duration["ANIMATION"]["FrameTime"])
+                    except Exception:
+                        pass
+
+                    writer = imageio.imwrite("<bytes>", im, "png")
                     img_surf = cairo.ImageSurface.create_from_png(io.BytesIO(writer))
                     surfaces.append(img_surf)
                     self._cached_images[img].append(img_surf)
 
                 reader.close()
 
+        duration = None
+        if durations:
+            # in seconds
+            duration = sum(durations) / 1000.0
+
         kwargs["image_surfaces"] = surfaces
+        kwargs["duration"] = duration
+        kwargs["durations"] = durations
         return self.add(Image(*args, **kwargs))
 
     img = image

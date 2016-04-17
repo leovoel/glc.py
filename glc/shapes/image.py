@@ -102,6 +102,11 @@ class Image(Shape):
         Image swapping speed multiplier.
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.duration = kwargs.pop("duration", None)
+        self.frame_durations = kwargs.pop("durations", None)
+
     def draw(self, context, t):
         mode = self.get_string("mode", t, "clamp")
         img_ease = self.get_bool("img_ease", t, True)

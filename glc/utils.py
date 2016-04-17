@@ -13,7 +13,7 @@
 from bisect import bisect_left
 from math import sqrt, sin, cos, tan, acos, pi, floor, degrees, radians
 from random import random
-from PIL import Image
+from PIL import Image, ImageSequence
 
 import re
 
@@ -483,6 +483,23 @@ def arc_to(context, x1, y1, x2, y2, r):
         return
 
     context.arc(px, py, r, sa, ea)
+
+
+def get_gif_duration(path):
+    """Gets the total duration of a gif image (in seconds)."""
+    img = Image.open(path)
+    durations = []
+
+    for frame in ImageSequence.Iterator(img):
+        try:
+            durations.append(frame.info["duration"])
+        except Exception:
+            pass
+
+    if not durations:
+        raise ValueError("Not a gif.")
+
+    return sum(durations) / 1000.0
 
 # string utils
 
