@@ -81,7 +81,7 @@ class Gif(Animation):
             index += 1
 
         delay = int(100 / self.fps)
-        fuzz = self.convert_opts.get("fuzz", 1)
+        fuzz = self.converter_opts.get("fuzz", 1)
         layer_opt = self.converter_opts.get("layer_opt", "OptimizeTransparency")
 
         cmd = [
