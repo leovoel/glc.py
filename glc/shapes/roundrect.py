@@ -16,6 +16,52 @@ from ..utils import quadratic_curve_to, rad
 
 class RoundRect(Shape):
 
+    """Draws a rounded rectangle.
+
+    You can either specify an specific radius for each corner,
+    or just an overall radius for all of them.
+    
+    If a radius for some corner is not specified, it falls back
+    to the overall radius.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.round_rect(x=100, y=100, w=100, h=100, radius=10)
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the rectangle.
+    y : float
+        Vertical position of the rectangle.
+    w : float
+        Width of the rectangle.
+    h : float
+        Height of the rectangle.
+    radius : float
+        Overall radius of the corners.
+    bottom_left : float
+        Radius of the bottom left corner.
+    bottom_right : float
+        Radius of the bottom right corner.
+    top_left : float
+        Radius of the bottom left corner.
+    top_right : float
+        Radius of the bottom right corner.
+    rotation : float
+        Angle of the rectangle, in degrees.
+    centered : bool
+        Whether the rectangle should be drawn from the
+        center or the top left corner.
+        Defaults to ``True``.
+    scale_x : float
+        Horizontal scale factor of the rectangle.
+    scale_y : float
+        Vertical scale factor of the rectangle.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)

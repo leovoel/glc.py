@@ -17,6 +17,91 @@ import cairo
 
 class Image(Shape):
 
+    """Draws an image.
+
+    This uses the `imageio`_ library for loading images.
+    See their `docs`_ for more info on what you can load.
+
+    .. _imageio: https://github.com/imageio/imageio
+    .. _docs: http://imageio.readthedocs.org/en/latest/userapi.html#imageio.get_reader
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.image(img="path/to/image.png", x=100, y=100)
+        # or
+        render_list.img(img="path/to/image.png", x=100, y=100)
+
+        # you can pass an emoji character as the path
+        # which will load an emoji from your emoji_path
+        render_list.img(img="\N{OK HAND SIGN}", x=100, y=100)
+
+        # you can pass a list of images
+        render_list.img(img=["1.png", "2.png", "3.png"], x=100, y=100)
+
+        # or a gif
+        render_list.img(img="numbers.gif", x=100, y=100)
+
+        # you can tint the image
+        render_list.img(img="image.png", x=100, y=100, tint=glc.Color("0xffff0000"))
+
+        # you can also control whether the image swapping should be eased
+        # of course this only has any effect if it's a multi-image container, such as gifs
+        render_list.img(img="image.gif", x=100, y=100, img_ease=False)
+        render_list.img(img="image.gif", x=100, y=100, img_ease=False, img_speed=2)
+
+        # the mode attribute controls how wrapping around happens
+        # clamp stops at the final frame
+        # wrap moves back to the first frame
+        render_list.img(img="image.gif", x=100, y=100, img_ease=False, mode="clamp")
+        render_list.img(img="image.gif", x=100, y=100, img_ease=False, mode="wrap")
+
+    Attributes
+    ----------
+    img
+        The image or images to use.
+        Can be a file path, http address, file object, raw bytes,
+        emoji (unicode codepoint), or a list with any of those.
+    x : float
+        Horizontal position of the image.
+    y : float
+        Vertical position of the image.
+    w : float
+        Width of the image. If no value is specified,
+        the original image width is used.
+    h : float
+        Height of the image. If no value is specified,
+        the original image height is used.
+    scale_x : float
+        Horizontal scale factor of the image.
+    scale_y : float
+        Vertical scale factor of the image.
+    centered : bool
+        Whether the image should be drawn with (x, y)
+        being at its center or at the top-left corner.
+        Defaults to ``True``.
+    rotation : float
+        Angle of the image, in degrees.
+    alpha : float
+        Opacity of the image.
+    tint : :class:`glc.Color`
+        Color to tint the image with.
+    mode : string
+        The image swapping wrapping mode.
+        Can only be of the following:
+
+        - clamp
+        - wrap
+
+    img_ease : bool
+        Whether the image swapping should be eased
+        with the rest of the animation or not.
+        Defaults to ``True``.
+    img_speed : float
+        Image swapping speed multiplier.
+    """
+
     def draw(self, context, t):
         mode = self.get_string("mode", t, "clamp")
         img_ease = self.get_bool("img_ease", t, True)

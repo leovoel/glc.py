@@ -17,6 +17,42 @@ import cairo
 
 class IsoTube(Shape):
 
+    """Draws an isometric tube.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.isotube(
+            x=100, y=100,
+            radius=60, h=40,
+            color_left=glc.Color("0xff999999"),
+            color_right=glc.Color("0xffcccccc"),
+            color_top=glc.Color("0xffeeeeee")
+        )
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the isometric tube.
+    y : float
+        Vertical position of the isometric tube.
+    radius : float
+        Radius of the isometric tube.
+    h : float
+        Height of the isometric tube.
+    color_left : :class:`glc.Color`
+        Color of the left side of the isometric tube.
+    color_right : :class:`glc.Color`
+        Color of the right side of the isometric tube.
+    color_top : :class:`glc.Color`
+        Color of the top of the isometric tube.
+    scale_x : float
+        Horizontal scale factor of the isometric tube.
+    scale_y : float
+        Vertical scale factor of the isometric tube.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)

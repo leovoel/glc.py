@@ -14,6 +14,41 @@ from ..utils import quadratic
 
 class CurveSegment(Shape):
 
+    """Draws a portion of a standard quadratic bézier curve using three points.
+
+    The drawn segment will animate from the start of the curve to the
+    end of it during the animation (and back to the start if the
+    loop attribute on the animation is ``True``).
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.curve_segment(x0=20, y0=20, x1=100, y1=200, x2=180, y2=20, percent=0.5, show_points=False)
+        # or
+        render_list.curveseg(x0=20, y0=20, x1=100, y1=200, x2=180, y2=20, percent=0.5, show_points=False)
+
+    Attributes
+    ----------
+    x0 : float
+        Horizontal position of the first point.
+    y0 : float
+        Vertical position of the first point.
+    x1 : float
+        Horizontal position of the second point.
+    y1 : float
+        Vertical position of the second point.
+    x2 : float
+        Horizontal position of the third point.
+    y2 : float
+        Vertical position of the third point.
+    percent : float
+        How much of the curve should be drawn.
+    show_points : bool
+        Whether to show the points used to draw the curve or not.
+        Defaults to ``False``.
+    """
+
     def draw(self, context, t):
         x0 = self.get_number("x0", t, 20)
         y0 = self.get_number("y0", t, 20)

@@ -16,6 +16,34 @@ from ..utils import rad
 
 class Star(Shape):
 
+    """Draws a star.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.star(x=100, y=100, inner_radius=25, outer_radius=50, points=5)
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the star.
+    y : float
+        Vertical position of the star.
+    inner_radius : float
+        Inner radius of the star.
+    outer_radius : float
+        Outer radius of the star.
+    points : int
+        Number of points in the star.
+    rotation : float
+        Angle of the star, in degrees.
+    scale_x : float
+        Horizontal scale factor of the star.
+    scale_y : float
+        Vertical scale factor of the star.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)

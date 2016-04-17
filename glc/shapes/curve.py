@@ -14,6 +14,33 @@ from ..utils import quadratic_curve_to
 
 class Curve(Shape):
 
+    """Draws a standard quadratic bézier curve using three points.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.curve(x0=20, y0=10, x1=100, y1=200, x2=180, y2=10, show_points=False)
+
+    Attributes
+    ----------
+    x0 : float
+        Horizontal position of the first point.
+    y0 : float
+        Vertical position of the first point.
+    x1 : float
+        Horizontal position of the second point.
+    y1 : float
+        Vertical position of the second point.
+    x2 : float
+        Horizontal position of the third point.
+    y2 : float
+        Vertical position of the third point.
+    show_points : bool
+        Whether to show the points used to draw the curve or not.
+        Defaults to ``False``.
+    """
+
     def draw(self, context, t):
         x0 = self.get_number("x0", t, 20)
         y0 = self.get_number("y0", t, 10)

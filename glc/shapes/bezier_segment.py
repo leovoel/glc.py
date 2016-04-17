@@ -14,7 +14,7 @@ from ..utils import bezier
 
 class BezierSegment(Shape):
 
-    """Draws a portion of a standard bezier curve using four points.
+    """Draws a portion of a standard bézier curve using four points.
 
     The drawn segment will animate from the start of the curve to the
     end of it during the animation (and back to the start if the
@@ -47,7 +47,7 @@ class BezierSegment(Shape):
     y3 : float
         Vertical position of the fourth point.
     percent : float
-        How much of the bezier curve should be drawn.
+        How much of the bézier curve should be drawn.
     show_points : bool
         Whether to show the points used to draw the curve or not.
         Defaults to ``False``.

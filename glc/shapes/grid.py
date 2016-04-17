@@ -13,6 +13,28 @@ from .shape import Shape
 
 class Grid(Shape):
 
+    """Draws a grid.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.grid(x=0, y=0, w=100, h=100, size=20)
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the grid.
+    y : float
+        Vertical position of the grid.
+    w : float
+        Width of the grid.
+    h : float
+        Height of the grid.
+    size : float
+        Size of a grid cell.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 0)
         y = self.get_number("y", t, 0)

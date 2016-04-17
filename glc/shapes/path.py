@@ -16,6 +16,29 @@ from .shape import Shape
 
 class Path(Shape):
 
+    """Draws lines that pass between the specified points.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.path(path=[0, 0, 100, 100, -100, 100, -50, 50, 0, 50])
+
+    Attributes
+    ----------
+    path : list of floats
+        Flat list of points, like this: `[0, 0, 100, 100]` (two points).
+        Can also be a nested list, in which case the points will be interpolated.
+        If the two lists are not the same size, excess points will be ignored.
+    start_percent : float
+        Where drawing of the path will start at.
+    end_percent : float
+        Where drawing of the path will end at.
+    show_points : bool
+        Whether to show the points used to draw the path or not.
+        Defaults to ``False``.
+    """
+
     def draw(self, context, t):
         path = self.get_array("path", t, [])
         start_percent = self.get_number("start_percent", t, 0)

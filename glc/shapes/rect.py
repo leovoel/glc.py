@@ -14,6 +14,36 @@ from ..utils import rad
 
 class Rect(Shape):
 
+    """Draws a rectangle.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.rect(x=100, y=100, w=100, h=100)
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the rectangle.
+    y : float
+        Vertical position of the rectangle.
+    w : float
+        Width of the rectangle.
+    h : float
+        Height of the rectangle.
+    rotation : float
+        Angle of the rectangle, in degrees.
+    centered : bool
+        Whether the rectangle should be drawn from the
+        center or the top left corner.
+        Defaults to ``True``.
+    scale_x : float
+        Horizontal scale factor of the rectangle.
+    scale_y : float
+        Vertical scale factor of the rectangle.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)

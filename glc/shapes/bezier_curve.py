@@ -13,7 +13,7 @@ from .shape import Shape
 
 class BezierCurve(Shape):
 
-    """Draws a standard bezier curve using four points.
+    """Draws a standard bézier curve using four points.
 
     Create it using:
 

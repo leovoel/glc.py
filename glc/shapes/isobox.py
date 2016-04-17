@@ -13,6 +13,42 @@ from .shape import Shape
 
 class IsoBox(Shape):
 
+    """Draws an isometric box.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.isobox(
+            x=100, y=100,
+            size=60, h=40,
+            color_left=glc.Color("0xff999999"),
+            color_right=glc.Color("0xffcccccc"),
+            color_top=glc.Color("0xffeeeeee")
+        )
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the isometric box.
+    y : float
+        Vertical position of the isometric box.
+    size : float
+        Size of the isometric box.
+    h : float
+        Height of the isometric box.
+    color_left : :class:`glc.Color`
+        Color of the left side of the isometric box.
+    color_right : :class:`glc.Color`
+        Color of the right side of the isometric box.
+    color_top : :class:`glc.Color`
+        Color of the top of the isometric box.
+    scale_x : float
+        Horizontal scale factor of the isometric box.
+    scale_y : float
+        Vertical scale factor of the isometric box.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)

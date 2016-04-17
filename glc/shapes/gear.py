@@ -16,6 +16,39 @@ from ..utils import rad
 
 class Gear(Shape):
 
+    """Draws a toothed gear.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.gear(x=100, y=100, radius=50, hub=10, rotation=0, teeth=10)
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the gear.
+    y : float
+        Vertical position of the gear.
+    radius : float
+        Outer radius of the gear.
+    hub : float
+        Radius of the hub of the gear (inner radius).
+    teeth : int
+        Number of teeth on the gear.
+    tooth_height : float
+        Height of the gear's teeth.
+    tooth_angle : float
+        Angle of the sides of the teeth.
+        This should be in the [0-1] range.
+    rotation : float
+        Rotation of the gear, in degrees.
+    scale_x : float
+        Horizontal scale factor of the gear.
+    scale_y : float
+        Vertical scale factor of the gear.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)

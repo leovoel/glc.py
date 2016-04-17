@@ -14,6 +14,32 @@ from ..utils import rad
 
 class Heart(Shape):
 
+    """Draws a heart.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.heart(x=100, y=100, w=50, h=50, scale_x=1, scale_y=1, rotation=0)
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the heart.
+    y : float
+        Vertical position of the heart.
+    w : float
+        Width of the heart.
+    h : float
+        Height of the heart.
+    scale_x : float
+        Horizontal scale factor of the heart.
+    scale_y : float
+        Vertical scale factor of the heart.
+    rotation : float
+        Angle of the heart, in degrees.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)

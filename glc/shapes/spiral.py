@@ -16,6 +16,37 @@ from ..utils import rad
 
 class Spiral(Shape):
 
+    """Draws a spiral.
+
+    Create it using:
+
+    .. code-block:: python
+
+        render_list.spiral(x=100, y=100, turns=6, inner_radius=10, outer_radius=100)
+
+    Attributes
+    ----------
+    x : float
+        Horizontal position of the spiral.
+    y : float
+        Vertical position of the spiral.
+    inner_radius : float
+        Inner radius of the spiral.
+    outer_radius : float
+        Outer radius of the spiral.
+    turns : float
+        Number of turns in the spiral (negative values make it turn in the other direction).
+    res : float
+        The spiral is drawn as a series of tiny line segments.
+        This is the angle of each of those segments, in degrees.
+    rotation : float
+        Angle of the spiral, in degrees).
+    scale_x : float
+        Horizontal scale factor of the spiral.
+    scale_y : float
+        Vertical scale factor of the spiral.
+    """
+
     def draw(self, context, t):
         x = self.get_number("x", t, 100)
         y = self.get_number("y", t, 100)
