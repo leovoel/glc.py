@@ -180,8 +180,8 @@ class Shape:
         context.save()
 
         context.set_line_width(self.get_number("line_width", t, self.default_styles["line_width"]))
-        context.set_line_cap(self.get_cairo_constant("line_cap", t, self.default_styles["line_cap"]))
-        context.set_line_join(self.get_cairo_constant("line_join", t, self.default_styles["line_join"]))
+        context.set_line_cap(self.get_cairo_constant("line_cap", "line_cap", t, self.default_styles["line_cap"]))
+        context.set_line_join(self.get_cairo_constant("line_join", "line_join", t, self.default_styles["line_join"]))
         context.set_miter_limit(self.get_number("miter_limit", t, self.default_styles["miter_limit"]))
 
         context.translate(
@@ -246,5 +246,5 @@ class Shape:
     def get_image(self, prop, t, default, wrap):
         return get_image(self.props.get(prop, None), t, default, wrap)
 
-    def get_cairo_constant(self, prop, t, default):
-        return get_cairo_constant(prop, self.props.get(prop, None), t, default)
+    def get_cairo_constant(self, name, prop, t, default):
+        return get_cairo_constant(name, self.props.get(prop, None), t, default)
