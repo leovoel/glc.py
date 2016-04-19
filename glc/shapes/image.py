@@ -87,6 +87,10 @@ class Image(Shape):
         Opacity of the image.
     tint : :class:`glc.Color`
         Color to tint the image with.
+    tint_op : int [Cairo constant]
+        Operator to use when tinting.
+        See http://cairographics.org/documentation/pycairo/3/reference/constants.html#cairo-operator
+        Defaults to ``cairo.OPERATOR_HSL_COLOR``.
     mode : string
         The image swapping wrapping mode.
         Can only be of the following:
@@ -126,6 +130,7 @@ class Image(Shape):
         alpha = self.get_number("alpha", t, 1)
         rotation = rad(self.get_number("rotation", t, 0))
         tint = self.get_color("tint", t, None)
+        tint_op = self.get_cairo_constant("operator", "tint_op", t, cairo.OPERATOR_HSL_COLOR)
 
         if not img:
             return
@@ -150,7 +155,7 @@ class Image(Shape):
             maskctx.paint()
 
             # paint
-            b.set_operator(cairo.OPERATOR_HSL_COLOR)
+            b.set_operator(tint_op)
             b.set_source_rgba(*tint)
             b.mask(cairo.SurfacePattern(mask))
         else:

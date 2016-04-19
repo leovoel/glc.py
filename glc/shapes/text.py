@@ -64,6 +64,7 @@ class Text(Shape):
         weight = self.get_string("weight", t, "normal")
         rotation = rad(self.get_number("rotation", t, 0))
         tint = self.get_bool("tint", t, False)
+        tint_op = self.get_cairo_constant("operator", "tint_op", t, cairo.OPERATOR_HSL_COLOR)
 
         if weight == "bold":
             _weight = cairo.FONT_WEIGHT_BOLD
@@ -120,7 +121,7 @@ class Text(Shape):
                         maskctx.paint()
 
                         # paint
-                        b.set_operator(cairo.OPERATOR_HSL_COLOR)
+                        b.set_operator(tint_op)
                         b.set_source_rgba(*self.get_color("fill", t, self.default_styles["fill"]))
                         b.mask(cairo.SurfacePattern(mask))
                     else:
