@@ -45,10 +45,8 @@ class Splat(Shape):
             points.append(self.make_point(angle + slice_ * (1 + curve), r))
             angle += slice_ * 2
 
-        context.save()
         context.translate(x, y)
         context.rotate(rotation)
         curve_path(context, points, True)
-        context.restore()
 
         self.draw_fill_and_stroke(context, t, False, True)

@@ -73,8 +73,6 @@ class RoundRect(Shape):
         top_right_radius = self.get_number("top_right", t, None)
         top_left_radius = self.get_number("top_left", t, None)
 
-        context.save()
-
         context.translate(x, y)
 
         # put scale here to get isometric effects
@@ -112,8 +110,6 @@ class RoundRect(Shape):
         quadratic_curve_to(context, w, -tan(pi / 8) * _r + _r, w, _r)
 
         context.line_to(w, h - (bottom_right_radius if bottom_right_radius is not None else r))
-
-        context.restore()
 
         context.restore()
 

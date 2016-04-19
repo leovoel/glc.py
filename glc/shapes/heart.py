@@ -57,8 +57,6 @@ class Heart(Shape):
         x3 = 0
         y3 = 0.5
 
-        context.save()
-
         context.translate(x, y)
         context.scale(scale_x, scale_y)
         context.rotate(rad(self.get_number("rotation", t, 0)))
@@ -73,5 +71,3 @@ class Heart(Shape):
         context.restore()
 
         self.draw_fill_and_stroke(context, t, True, False)
-
-        context.restore()

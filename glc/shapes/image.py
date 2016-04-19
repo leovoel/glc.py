@@ -156,8 +156,6 @@ class Image(Shape):
         else:
             _img = img
 
-        context.save()
-
         context.translate(x, y)
         context.scale(scale_x, scale_y)
         context.rotate(rotation)
@@ -169,5 +167,3 @@ class Image(Shape):
 
         context.set_source_surface(_img)
         context.paint_with_alpha(alpha)
-
-        context.restore()
