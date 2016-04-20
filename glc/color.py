@@ -14,7 +14,7 @@ from string import hexdigits
 from colorsys import rgb_to_hsv, hsv_to_rgb, rgb_to_hls, hls_to_rgb
 from math import floor, sin
 from .utils import clamp, randrange
-from .color_names import COLOR_NAMES
+from .color_names import COLOR_NAMES, XKCD_COLOR_NAMES
 
 
 def rgb2hsv(red, green, blue):
@@ -435,6 +435,19 @@ def name2color(name):
     return rgba(*COLOR_NAMES.get(name.lower(), (0.0, 0.0, 0.0)))
 
 
+def xkcd2color(name):
+    """Creates a color based on a name from this list: https://xkcd.com/color/rgb/
+
+    If the passed in name is not recognized, black is returned.
+
+    Returns
+    -------
+    color : :class:`Color`
+        A Color object.
+    """
+    return rgba(*XKCD_COLOR_NAMES.get(name.lower(), (0.0, 0.0, 0.0)))
+
+
 def int2color(color):
     """Creates a color based on an integer.
 
@@ -474,6 +487,14 @@ def str2color(string):
             - CSS/X11 color name
 
                 (see https://en.wikipedia.org/wiki/X11_color_names)
+
+            - XKCD color name
+
+                (see https://xkcd.com/color/rgb/)
+
+        The possible values here are ordered by check order - that is,
+        hex literals are checked first, then X11 color names, then
+        XKCD ones.
 
 
     Returns
@@ -517,9 +538,12 @@ def str2color(string):
                 int(string[1] * 2, 16) / 255,
                 int(string[2] * 2, 16) / 255,
             )
-    else:  # X11/css name
-        return name2color(string)
-
+    else:
+        if string in COLOR_NAMES:
+            # X11/css name
+            return name2color(string)
+        # xkcd name
+        return xkcd2color(string)
 
 # utils
 
