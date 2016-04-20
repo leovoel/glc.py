@@ -14,7 +14,3 @@ with Gif(get_filename(__file__), color_count=8) as a:
             l.oval(x=0, y=0, rx=r, ry=r * 0.5, stroke=False, fill=col3, parent=c)
             l.oval(x=0, y=0, rx=r, ry=r * 0.5, stroke="white", fill=False, start=0, end=180, line_width=lw, parent=c)
             l.oval(x=0, y=0, rx=r, ry=r * 0.5, stroke=Color(col3).darken(20), fill=False, start=180, end=360, line_width=lw, parent=c)
-
-
-import os
-os.startfile(get_filename(__file__))
