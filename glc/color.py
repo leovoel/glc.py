@@ -501,8 +501,8 @@ def str2color(string):
         elif length == 6:  # rrggbb
             return rgba(
                 int(string[0:2], 16) / 255,
-                int(string[3:4], 16) / 255,
-                int(string[5:6], 16) / 255
+                int(string[2:4], 16) / 255,
+                int(string[4:6], 16) / 255
             )
         elif length == 4:  # argb
             return rgba(
