@@ -59,6 +59,8 @@ Shortcuts
 
 .. autofunction:: glc.color.name2color
 
+.. autofunction:: glc.color.xkcd2color
+
 .. autofunction:: glc.color.str2color
 
 .. autofunction:: glc.color.int2color
