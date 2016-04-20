@@ -477,10 +477,8 @@ def str2color(string):
 
                 The format is ``[#/0x][[A]A]R[R]G[G]B[B]``.
 
-
                 If you pass just one digit for each color value, the value is used twice
                 (e.g. for R G B, the digits are duplicated so it becomes RR GG BB).
-
 
                 Alpha is optional, and so are the 0x/# hex identifiers.
 
