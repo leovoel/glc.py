@@ -50,7 +50,10 @@ Bézier Curve
 Bézier Segment
 ==============
 
-TODO: add example here
+.. image:: _static/bezier_segment_example.gif
+
+.. literalinclude:: _static/bezier_segment_example.py
+    :language: python
 
 .. autoclass:: glc.shapes.BezierSegment
     :members:
@@ -58,7 +61,10 @@ TODO: add example here
 Circle
 ======
 
-TODO: add example here
+.. image:: _static/circle_example.gif
+
+.. literalinclude:: _static/circle_example.py
+    :language: python
 
 .. autoclass:: glc.shapes.Circle
     :members:
