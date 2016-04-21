@@ -11,6 +11,7 @@
 from subprocess import Popen, DEVNULL, PIPE
 from .config import IMAGEMAGICK_BINARY, FFMPEG_BINARY
 from .animation import Animation
+from io import IOBase
 
 import os
 import shlex
@@ -63,19 +64,27 @@ class Gif(Animation):
         ----------
         frames : list of numpy arrays
             Container with the frames necessary to render this animation to a file.
-        filename : str
+        filename : str or file-like object
             The filename to use when saving the file.
+            Can also be a file-like object.
         """
         # this is stupid
 
-        _filename, _file_extension = os.path.splitext(filename)
+        save_as_bytes = "GIF:-"
+        
+        if isinstance(filename, IOBase):
+            _filename = save_as_bytes
+            _name = "FILE-LIKE"
+        else:
+            _filename = filename
+            _name, _ = os.path.splitext(filename)
 
         temp_filenames = []
 
         index = 0
 
         for frame in frames:
-            temp_name = "{}_TEMP_{:04d}.png".format(_filename, index)
+            temp_name = "{}_TEMP_{:04d}.png".format(_name, index)
             temp_filenames.append(temp_name)
             imageio.imsave(temp_name, frame)
             index += 1
@@ -89,16 +98,22 @@ class Gif(Animation):
             "-delay", str(delay),
             "-dispose", "{:d}".format(2 if self.converter_opts.get("dispose", False) or self.transparent else 1),
             "-loop", "{:d}".format(self.converter_opts.get("loop", 0)),
-            "{}_TEMP_*.png".format(_filename),
+            "{}_TEMP_*.png".format(_name),
             "-coalesce",
             "-layers", layer_opt,
             "-colors", str(self.color_count),
             "-fuzz", "{:02d}%".format(fuzz),
-            filename
+            _filename
         ]
 
-        proc = Popen(cmd)
-        proc.wait()
+        proc = Popen(cmd, stdout=PIPE)
+        out, err = proc.communicate()
+
+        if _filename == save_as_bytes:
+            filename.write(out)
+        else:
+            with open(filename, "wb") as f:
+                f.write(out)
 
         for f in temp_filenames:
             os.remove(f)
@@ -113,9 +128,17 @@ class Gif(Animation):
         ----------
         frames : list of numpy arrays
             Container with the frames necessary to render this animation to a file.
-        filename : str
+        filename : str or file-like object
             The filename to use when saving the file.
+            Can also be a file-like object.
         """
+
+        save_as_bytes = "GIF:-"
+        
+        if isinstance(filename, IOBase):
+            _filename = save_as_bytes
+        else:
+            _filename = filename
 
         # NOTE: main idea here is to grab frames using ffmpeg,
         # and pipe those to imagemagick's convert.
@@ -174,10 +197,10 @@ class Gif(Animation):
         ]
 
         im_command.extend(shlex.split(self.converter_opts.get("before_args", "")))
-        im_command.extend(["-", "-coalesce", filename])
+        im_command.extend(["-", "-coalesce", _filename])
 
         popen_kwargs["stdin"] = ffmpeg_process.stdout
-        popen_kwargs["stdout"] = DEVNULL
+        popen_kwargs["stdout"] = PIPE
         im_process = Popen(im_command, **popen_kwargs)
 
         for frame in frames:
@@ -186,7 +209,14 @@ class Gif(Animation):
         ffmpeg_process.stdin.close()
         ffmpeg_process.wait()
 
-        im_process.wait()
+        out, err = im_process.communicate()
+
+        if _filename == save_as_bytes:
+            filename.write(out)
+            return
+
+        with open(filename, "wb") as f:
+            f.write(out)
 
     def save_with_imageio(self, frames, filename):
         """Writes this animation to a GIF file using imageio.
@@ -197,24 +227,32 @@ class Gif(Animation):
         ----------
         frames : list of numpy arrays
             Container with the frames necessary to render this animation to a file.
-        filename : str
+        filename : str or file-like object
             The filename to use when saving the file.
+            Can also be a file-like object.
         """
         # TODO: make this more customizable
 
         quant = self.converter_opts.get("quantizer", "wu")
 
-        writer = imageio.get_writer(
-            filename,
+        # always get the returned bytes
+        # then open, if necessary and
+        # write to a file-like object
+
+        buf = imageio.mimwrite(
+            "<bytes>",
+            ims=frames,
+            format="gif",
             duration=1 / self.fps,
             quantizer=quant,
             palettesize=self.color_count
         )
 
-        for frame in frames:
-            writer.append_data(frame)
-
-        writer.close()
+        if isinstance(filename, IOBase):
+            filename.write(buf)
+        else:
+            with open(filename, "wb") as f:
+                f.write(buf)
 
     def render_and_save(self, filename=None):
         """Renders the animation and writes it to a GIF file.
