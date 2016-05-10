@@ -9,7 +9,8 @@
 """
 
 from ..easing import EASING_FUNCTIONS
-from ..value_parser import get_array, get_color, get_bool, get_number, get_string, get_image, get_cairo_constant
+from ..value_parser import get_array, get_color, get_bool, get_number
+from ..value_parser import get_string, get_image, get_cairo_constant, get_point_array
 from ..utils import randrange
 
 import cairo
@@ -242,6 +243,9 @@ class Shape:
 
     def get_array(self, prop, t, default):
         return get_array(self.props.get(prop, None), t, default)
+
+    def get_point_array(self, prop, t, default):
+        return get_point_array(self.props.get(prop, None), t, default)
 
     def get_image(self, prop, t, default, wrap):
         return get_image(self.props.get(prop, None), t, default, wrap)

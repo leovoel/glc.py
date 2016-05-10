@@ -72,7 +72,10 @@ Circle
 Curve
 =====
 
-TODO: add example here
+.. image:: _static/curve_example.gif
+
+.. literalinclude:: _static/curve_example.py
+    :language: python
 
 .. autoclass:: glc.shapes.Curve
     :members:

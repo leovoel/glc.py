@@ -15,7 +15,7 @@ from ..utils import curve_path
 class CurvePath(Shape):
 
     def draw(self, context, t):
-        points = self.get_array("points", t, [])
+        points = self.get_point_array("points", t, [])
         loop = self.get_bool("loop", t, False)
 
         if not points:

@@ -127,6 +127,28 @@ def get_array(prop, t, default):
     return default
 
 
+def get_point_array(prop, t, default):
+    if prop is None:
+        return default
+
+    if callable(prop):
+        return prop(t)
+    elif prop and (len(prop) == 2) and is_arr(prop[0]) and len(prop[0]) and is_arr(prop[1]) and len(prop[1]):
+        # array of arrays
+        arr0 = prop[0]
+        arr1 = prop[1]
+        length = min(len(arr0), len(arr1))
+        result = []
+        for i in range(length):
+            v0 = arr0[i]
+            v1 = arr1[i]
+            result.append([lerp(t, v0[0], v1[0]), lerp(t, v0[1], v1[1])])
+        return result
+    elif prop and len(prop) > 1:
+        return prop
+    return default
+
+
 def get_image(prop, t, default, mode):
     # TODO: add ping-pong loop mode
 
