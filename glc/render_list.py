@@ -264,13 +264,14 @@ class RenderList:
             # so the right thing to do here would be to abstract it out
             # into a special "get the right image" module.
             # refer to twemoji: https://github.com/twitter/twemoji
-            if isinstance(img, str) and len(img) == 1 and is_emoji(img) and self.emoji_path:
-                hex_val = img.encode("unicode-escape").decode("ascii").lstrip("\\U0")
+            if isinstance(img, str):
+                if len(img) == 1 and is_emoji(img) and self.emoji_path:
+                    hex_val = img.encode("unicode-escape").decode("ascii").lstrip("\\U0")
 
-                if img not in self._emoji_cache:
-                    # TODO: not assume that .png is the format available
-                    path = os.path.abspath(os.path.join(self.emoji_path, hex_val + ".png"))
-                    surfaces.append(cairo.ImageSurface.create_from_png(path))
+                    if img not in self._emoji_cache:
+                        # TODO: not assume that .png is the format available
+                        path = os.path.abspath(os.path.join(self.emoji_path, hex_val + ".png"))
+                        surfaces.append(cairo.ImageSurface.create_from_png(path))
                 else:
                     surfaces.append(self._emoji_cache[char])
 
