@@ -264,7 +264,7 @@ class RenderList:
             # so the right thing to do here would be to abstract it out
             # into a special "get the right image" module.
             # refer to twemoji: https://github.com/twitter/twemoji
-            if len(img) == 1 and is_emoji(img) and self.emoji_path:
+            if isinstance(img, str) and len(img) == 1 and is_emoji(img) and self.emoji_path:
                 hex_val = img.encode("unicode-escape").decode("ascii").lstrip("\\U0")
 
                 if img not in self._emoji_cache:
