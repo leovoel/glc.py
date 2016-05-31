@@ -28,6 +28,9 @@ class ImageSequence(Animation):
         filename : str
             The name to use when saving the files.
         """
+        if filename is None:
+            filename = self.filename
+
         frames = self.render_all()
 
         n = filename.split(".")
