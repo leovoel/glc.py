@@ -5,7 +5,7 @@
 This is a Python library made to help with the creation of code-based animation.
 Heavily based on (honestly, it could be considered a "port" of) [gifloopcoder][glc] by [bit101][kp].
 
-The documentation can be found [here](http://glcpy.readthedocs.org/en/latest/).
+The documentation can be found [here](http://glcpy.readthedocs.io/en/latest/).
 
 This uses [pycairo][pyc] for drawing. You can also use [cairocffi][ccf], which is mostly compatible with [pycairo][pyc].
 To do so, add the following at the top of your script:
