@@ -272,11 +272,14 @@ class Color:
 
     def in_int(self):
         """Returns this color as a single integer, in the format AA RR GG BB."""
-        r = floor(self.r * 255)
-        g = floor(self.g * 255)
-        b = floor(self.b * 255)
-        a = floor(self.a * 255)
+        r, g, b, a = map(floor, [self.r * 255, self.g * 255, self.b * 255, self.a * 255])
         return a << 24 | r << 16 | g << 8 | b
+
+    def hexstr(self):
+        """Returns this color as a hex string, in the format AA RR GG BB,
+        with no leading character - such as # or 0x.
+        """
+        return "{:X}".format(self.in_int())
 
     def brightness(self):
         """Returns the overall brightness for this color.
@@ -301,6 +304,8 @@ class Color:
 
     def __int__(self):
         return self.in_int()
+
+    __index__ = __int__
 
     def __repr__(self):
         return "rgba({0.r}, {0.g}, {0.b}, {0.a})".format(self)
