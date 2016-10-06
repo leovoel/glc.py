@@ -240,6 +240,7 @@ def pick_closest(n, l):
 
 # cairo utils
 
+# TODO: remove this
 def bgra_to_rgba(surface):
     """Converts a Cairo surface color format from BGRA to RGBA, using Pillow/PIL.
 

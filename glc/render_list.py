@@ -181,14 +181,14 @@ class RenderList:
             self.after_render(self, self.surface, self.context, t)
             self.context.restore()
 
-        # convert the stupid cairo surface from
-        # bgra to rgba using pillow first, then
-        # convert that to a numpy array
-        # v silly
+        buf = numpy.frombuffer(self.surface.get_data(), numpy.uint8)
+        buf.shape = (self.surface.get_height(), self.surface.get_width(), 4)
 
-        buffer = bgra_to_rgba(self.surface)
-        buf = numpy.frombuffer(buffer, numpy.uint8)
-        buf.shape = (self.height, self.width, 4)
+        # BGRA -> RGBA
+        # NOTE: does this really just happen with little endian machines?
+        # have to test at some point...
+        buf = buf[:, :, [2, 1, 0, 3]]
+
         return buf
 
     # shortcuts to add shapes
