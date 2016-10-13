@@ -9,3 +9,5 @@ with Gif(get_filename(__file__)) as a:
     res = 250
     c = [hsva((i / res) * 360, 1, 1) for i in range(res)]
     l.gradient_pie(x=a.w * 0.5, y=a.h * 0.5, rotation=[0, 90], rx=a.w * 0.5, ry=a.h * 0.5, colors=c)
+
+    a.save()

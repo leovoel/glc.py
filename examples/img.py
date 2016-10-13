@@ -9,3 +9,5 @@ with Gif(get_filename(__file__)) as a:
     l = a.render_list
     l.img(x=a.w * 0.6, y=a.h * 0.5 - 20, rotation=[360, 0], img="eyes.png", translation_x=[200, 0])
     l.img(x=a.w * 0.25, y=a.h * 0.5, shake=[10, 100], img="ok.png")
+
+    a.save()

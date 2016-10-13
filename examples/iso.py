@@ -26,3 +26,5 @@ with Gif(get_filename(__file__)) as a:
                 color_left=sinebow(x + y * 0.2, 0.3, 0.3, 0.3, 0 * ps, 1 * ps, 2 * ps).darken(10),
                 color_right=sinebow(x + y * 0.2, 0.3, 0.3, 0.3, 0 * ps, 1 * ps, 2 * ps).darken(20)
             )
+
+    a.save()

@@ -28,3 +28,5 @@ with Gif(get_filename(__file__)) as a:
     l.circle(x=0, y=0, radius=[0, 10], translation_x=30, translation_y=90, fill="white", stroke=False, parent=c).set_ease("elastic")
 
     l.ray(x=0, y=0, translation_x=-10, translation_y=60, line_width=10, length=80, stroke="white", parent=c)
+
+    a.save()

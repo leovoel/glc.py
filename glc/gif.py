@@ -11,6 +11,7 @@
 from subprocess import Popen, DEVNULL, PIPE
 from .config import IMAGEMAGICK_BINARY, FFMPEG_BINARY
 from .animation import Animation
+from .utils import clamp
 from io import IOBase
 
 import os
@@ -26,8 +27,10 @@ class Gif(Animation):
 
     Parameters
     ----------
+    filename : str or file-like object
+        Where to save this GIF.
     color_count : int
-        Power of two value that indicates the size of the palette for the gif.
+        GIF palette size, should be a power of two, and in the 2-256 range.
         Defaults to 256.
     converter : str
         The converter to use. Right now, there are three converters:
@@ -40,12 +43,17 @@ class Gif(Animation):
 
         Defaults to ``'imageio'``.
     converter_opts : dict
-        Dictionary with options for the converters.
+        Dictionary with extra options for the converters.
     """
 
     def __init__(self, filename, *args, **kwargs):
-        super().__init__(filename, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+        self.filename = filename
+
         self.color_count = kwargs.get("color_count", 256)
+
+        # TODO: document extra converter options
         self.converter = kwargs.get("converter", "imageio")
         self.converter_opts = kwargs.get("converter_opts", dict())
 
@@ -54,40 +62,54 @@ class Gif(Animation):
         self.converter_opts.update(kwargs)
         return self
 
-    def save_with_imagemagick_tempfiles(self, frames, filename):
+    def save(self):
+        """Writes this animation to a GIF file.
+
+        Uses the specified converter, unless that doesn't exist,
+        in which case imageio is the default.
+        """
+        # TODO: add warning about this?
+        if self.color_count not in (2, 4, 8, 16, 32, 64, 128, 256):
+            self.color_count = 1 << (clamp(self.color_count, 2, 256) - 1).bit_length()
+
+        frames = self.render()
+
+        func_name = "save_with_%s" % self.converter.lower()
+        func = getattr(self, func_name, self.save_with_imageio)
+        result = func(frames)
+
+        if isinstance(self.filename, IOBase):
+            self.filename.write(result)
+        else:
+            with open(self.filename, "wb") as f:
+                f.write(result)
+
+    def save_with_imagemagick_tempfiles(self, frames):
         """Writes this animation to a GIF file using ImageMagick, using temporary files.
 
-        This exporter supports transparent backgrounds.
+        This converter supports transparent backgrounds.
         This saves every frame to a temporary file.
 
         Parameters
         ----------
         frames : list of numpy arrays
             Container with the frames necessary to render this animation to a file.
-        filename : str or file-like object
-            The filename to use when saving the file.
-            Can also be a file-like object.
+
+        Returns
+        -------
+        Image file as bytes
         """
         # this is stupid
 
-        save_as_bytes = "GIF:-"
-        
-        if isinstance(filename, IOBase):
-            _filename = save_as_bytes
-            _name = "FILE-LIKE"
-        else:
-            _filename = filename
-            _name, _ = os.path.splitext(filename)
+        # TODO: append random string?
+        filename = "GLC_ANIM"
 
         temp_filenames = []
 
-        index = 0
-
-        for frame in frames:
-            temp_name = "{}_TEMP_{:04d}.png".format(_name, index)
+        for index, frame in enumerate(frames):
+            temp_name = "{}_TEMP_{:04d}.png".format(filename, index)
             temp_filenames.append(temp_name)
             imageio.imsave(temp_name, frame)
-            index += 1
 
         delay = int(100 / self.fps)
         fuzz = self.converter_opts.get("fuzz", 1)
@@ -98,47 +120,37 @@ class Gif(Animation):
             "-delay", str(delay),
             "-dispose", "{:d}".format(2 if self.converter_opts.get("dispose", False) or self.transparent else 1),
             "-loop", "{:d}".format(self.converter_opts.get("loop", 0)),
-            "{}_TEMP_*.png".format(_name),
+            "{}_TEMP_*.png".format(filename),
             "-coalesce",
             "-layers", layer_opt,
             "-colors", str(self.color_count),
             "-fuzz", "{:02d}%".format(fuzz),
-            _filename
+            "GIF:-"
         ]
 
         proc = Popen(cmd, stdout=PIPE)
         out, err = proc.communicate()
 
-        if _filename == save_as_bytes:
-            filename.write(out)
-        else:
-            with open(filename, "wb") as f:
-                f.write(out)
-
         for f in temp_filenames:
             os.remove(f)
 
-    def save_with_imagemagick(self, frames, filename):
+        return out
+
+    def save_with_imagemagick(self, frames):
         """Writes this animation to a GIF file using ImageMagick and FFmpeg.
 
-        This exporter supports transparent backgrounds.
+        This converter supports transparent backgrounds.
         This uses piping to avoid temporary files.
 
         Parameters
         ----------
         frames : list of numpy arrays
             Container with the frames necessary to render this animation to a file.
-        filename : str or file-like object
-            The filename to use when saving the file.
-            Can also be a file-like object.
-        """
 
-        save_as_bytes = "GIF:-"
-        
-        if isinstance(filename, IOBase):
-            _filename = save_as_bytes
-        else:
-            _filename = filename
+        Returns
+        -------
+        Image file as bytes
+        """
 
         # NOTE: main idea here is to grab frames using ffmpeg,
         # and pipe those to imagemagick's convert.
@@ -197,7 +209,7 @@ class Gif(Animation):
         ]
 
         im_command.extend(shlex.split(self.converter_opts.get("before_args", "")))
-        im_command.extend(["-", "-coalesce", _filename])
+        im_command.extend(["-", "-coalesce", "GIF:-"])
 
         popen_kwargs["stdin"] = ffmpeg_process.stdout
         popen_kwargs["stdout"] = PIPE
@@ -211,68 +223,27 @@ class Gif(Animation):
 
         out, err = im_process.communicate()
 
-        if _filename == save_as_bytes:
-            filename.write(out)
-            return
+        return out
 
-        with open(filename, "wb") as f:
-            f.write(out)
-
-    def save_with_imageio(self, frames, filename):
+    def save_with_imageio(self, frames):
         """Writes this animation to a GIF file using imageio.
 
-        This exporter does not support transparent backgrounds.
+        This converter does not support transparent backgrounds.
 
         Parameters
         ----------
         frames : list of numpy arrays
             Container with the frames necessary to render this animation to a file.
-        filename : str or file-like object
-            The filename to use when saving the file.
-            Can also be a file-like object.
+
+        Returns
+        -------
+        Image file as bytes
         """
-        # TODO: make this more customizable
-
-        quant = self.converter_opts.get("quantizer", "wu")
-
-        # always get the returned bytes
-        # then open, if necessary and
-        # write to a file-like object
-
-        buf = imageio.mimwrite(
+        return imageio.mimwrite(
             "<bytes>",
             ims=frames,
             format="gif",
             duration=1 / self.fps,
-            quantizer=quant,
+            quantizer=self.converter_opts.get("quantizer", "wu"),
             palettesize=self.color_count
         )
-
-        if isinstance(filename, IOBase):
-            filename.write(buf)
-        else:
-            with open(filename, "wb") as f:
-                f.write(buf)
-
-    def render_and_save(self, filename=None):
-        """Renders the animation and writes it to a GIF file.
-
-        This uses the currently set exporter based on the attribute ``converter``.
-        If ``converter`` is somehow ``None``, or some unknown value, the default
-        is to export the animation using imageio.
-
-        Parameters
-        ----------
-        filename : str
-            The filename to use when saving the file.
-        """
-        if filename is None:
-            filename = self.filename
-
-        frames = self.render_all()
-        func = getattr(self, "save_with_{}".format(self.converter), None)
-
-        if func is None:
-            self.save_with_imageio(frames, filename)
-            return
-        func(frames, filename)

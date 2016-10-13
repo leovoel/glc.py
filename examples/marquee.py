@@ -24,3 +24,5 @@ with Gif(get_filename(__file__)) as a:
     t.set_prop(
         translation_x=[a.w * 0.5 + tw * 0.5, -a.w * 0.5 - tw * 0.5]
     )
+
+    a.save()

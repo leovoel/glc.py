@@ -17,3 +17,5 @@ with Gif(get_filename(__file__)) as a:
             y=[500 * 0.5 - 100, 500 * 0.5 + 100],
             radius=r
         ).ease = iv[i]
+
+    a.save()

@@ -14,3 +14,5 @@ with Gif(get_filename(__file__)) as a:
         if i % 2 == 0:
             f = "black"
         l.circle(x=a.w * 0.5, y=a.h * 0.5, radius=[0 + (s * i), -40 + (s * i)], fill=Color(f), scale_y=0.5)
+
+    a.save()

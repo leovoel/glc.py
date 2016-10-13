@@ -19,3 +19,5 @@ with Gif(get_filename(__file__)) as a:
                 translation_x=[-w, w]
             )
         l.line(x0=0, y0=y, x1=a.w, y1=y, stroke="grey", line_width=lw)
+
+    a.save()

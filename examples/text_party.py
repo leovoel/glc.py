@@ -16,3 +16,5 @@ with Gif(get_filename(__file__)) as a:
                 rotation=[-10, 0, 10],
                 phase=(x + y) * 0.00345
             )
+
+    a.save()

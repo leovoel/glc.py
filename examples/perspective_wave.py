@@ -27,3 +27,5 @@ with Gif(get_filename(__file__)) as a:
                 fill=sinebow(z / 10, 0.3, 0.3, 0.3, 0, 1 * phase_shift, 2 * phase_shift),
                 phase=(x * 0.001) + (z * 0.001)
             )
+
+    a.save()

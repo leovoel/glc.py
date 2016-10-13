@@ -43,9 +43,7 @@ class Animation:
         List of renderables/shapes. It's what you use to create the actual animation.
     """
 
-    def __init__(self, filename, *args, **kwargs):
-        self.filename = filename
-
+    def __init__(self, *args, **kwargs):
         self.render_list = RenderList(*args, **kwargs)
         self.width = self.render_list.width
         self.height = self.render_list.height
@@ -55,8 +53,6 @@ class Animation:
 
         self.duration = kwargs.pop("duration", 2.0)
         self.fps = kwargs.pop("fps", 30)
-
-        self.save_single = kwargs.pop("save_single", None)
 
         self.transparent = False
 
@@ -225,7 +221,7 @@ class Animation:
         self.render_list.emoji_path = path
         return self
 
-    def render_all(self):
+    def render(self):
         """Renders all the necessary frames for this animation to numpy arrays.
 
         Returns
@@ -237,43 +233,32 @@ class Animation:
         total_frames = self.duration * self.fps
         speed = 1 / total_frames
         t = 0
+
         rendering = True
 
         while rendering:
             frames.append(self.render_list.render(t))
             t += speed
+
             if round(t * 10000) / 10000 >= 1:
-                t = 0
                 rendering = False
 
         return frames
 
-    def render_one(self, t, filename=None):
-        """Renders one frame at time t then export it to a file.
-
-        If filename is ``"<bytes>"``, then the frame is returned as a numpy array.
+    def render_at(self, t):
+        """Renders one frame at time t to a numpy array.
 
         Parameters
         ----------
         t : float
             The time to render at.
             Should be a value within the range 0.0 to 1.0.
-        filename : str
-            The path + name of the file + extension to save the image in.
 
         Returns
         -------
         The rendered frame as a numpy array.
         """
-        if filename is None:
-            filename = self.filename
-
-        frame = self.render_list.render(t)
-
-        if filename is not "<bytes>":
-            imageio.imwrite(filename, frame)
-            return
-        return frame
+        return self.render_list.render(t)
 
     @property
     def context(self):
@@ -296,8 +281,4 @@ class Animation:
         return self
 
     def __exit__(self, exception_type, exception_value, traceback):
-        if not exception_type:
-            if self.save_single is not None:
-                self.render_one(self.save_single)
-                return
-            self.render_and_save()
+        self.render_list.surface.finish()

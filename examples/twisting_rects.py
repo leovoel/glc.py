@@ -34,3 +34,5 @@ with Gif(get_filename(__file__), color_count=8) as a:
             )
             x += res * 0.7
         y += res * 0.5
+
+    a.save()

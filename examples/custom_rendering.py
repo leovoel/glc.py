@@ -15,4 +15,5 @@ def draw(l, surf, ctx, t):
     ctx.fill()
 
 
-Gif(get_filename(__file__), after_render=draw).render_and_save()
+with Gif(get_filename(__file__), after_render=draw) as a:
+    a.save()

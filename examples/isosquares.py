@@ -24,3 +24,5 @@ with Gif(get_filename(__file__), color_count=128) as a:
             rotation=[0, 360],
             phase=y / res * 0.1
         )
+
+    a.save()
