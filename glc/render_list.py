@@ -272,10 +272,10 @@ class RenderList:
                         # TODO: not assume that .png is the format available
                         path = os.path.abspath(os.path.join(self.emoji_path, hex_val + ".png"))
                         surfaces.append(cairo.ImageSurface.create_from_png(path))
-                else:
-                    surfaces.append(self._emoji_cache[char])
+                    else:
+                        surfaces.append(self._emoji_cache[hex_val])
 
-                continue
+                    continue
 
             if img in self._cached_images:
                 for surface in self._cached_images[img]:
