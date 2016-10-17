@@ -10,11 +10,9 @@
 
 """
 
-from copy import deepcopy
 from .shapes import *
-from .color import Color
+from .color import Color, gray
 from .utils import bgra_to_rgba, is_emoji
-from .default_styles import DEFAULT_STYLES
 
 import os
 import io
@@ -68,7 +66,22 @@ class RenderList:
         self.ease = kwargs.pop("ease", "sine")
         self.loop = kwargs.pop("loop", True)
 
-        self.default_styles = deepcopy(DEFAULT_STYLES)
+        self.default_styles = {
+            "line_width": 1,
+            "bg_color": gray(1.0),
+            "fill": gray(0.0),
+            "stroke": gray(0.0),
+            "line_cap": cairo.LINE_CAP_ROUND,
+            "line_dash": [],
+            "line_dash_offset": 0,
+            "line_join": cairo.LINE_JOIN_ROUND,
+            "miter_limit": 10,
+            "translation_x": 0,
+            "translation_y": 0,
+            "shake": 0,
+            "operator": cairo.OPERATOR_OVER
+        }
+
         self.default_styles.update(kwargs.pop("default_styles", {}))
 
         self.surface = cairo.ImageSurface(self.mem_format, self.width, self.height)

@@ -33,6 +33,7 @@ class ImageSequence(Animation):
             i.e. ``'thing_{frame:04d}.png'``
     converter : str
         The converter to use. Right now, there's one converter:
+
         - ``'imageio'``
 
         Defaults to ``'imageio'``.
