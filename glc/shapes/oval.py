@@ -60,12 +60,12 @@ class Oval(Shape):
         context.scale(rx * 0.01, ry * 0.01)
 
         if draw_from_center:
-            context.moveTo(0, 0)
+            context.move_to(0, 0)
 
         context.arc(0, 0, 100, rad(start_angle), rad(end_angle))
 
         if draw_from_center:
-            context.closePath()
+            context.close_path()
         context.restore()
 
         self.draw_fill_and_stroke(context, t, True, False)
